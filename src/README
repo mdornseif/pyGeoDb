@@ -1,0 +1,20 @@
+1) alle GeoLocations in einem PLZ-Gebiet:
+
+GeoLocation.select(GeoLocation.q.Zipcode == zipcode)
+oder
+GeoLocation.select(GeoLocation.q.Zipcode.startswith(zipcode))
+
+2) Distanz zwischen zwei GeoLocations
+
+geoloc_1 = GeoLocation.select()[0]
+geoloc_2 = GeoLocation.select()[0]
+
+distance = geoloc_1 - geoloc_2
+(Reihenfolge spielt keine Rolle)
+
+3) GeoLocations sortiert nach Distanz zu einem Referenzpunkt:
+
+referenz = GeoLocation.select()[0]
+locations = GeoLocation.select()
+
+distanz_liste = sort(locations, referenz)

@@ -1,0 +1,25 @@
+SELECT 
+td.text_val, co.lon, co.lat 
+
+FROM geodb_coordinates co, geodb_textdata td
+
+WHERE co.loc_id = td.loc_id
+AND td.loc_id IN ( SELECT plz.loc_id
+FROM geodb_coordinates co, 
+geodb_textdata td, 
+geodb_hierarchies hi, 
+geodb_textdata land, 
+geodb_textdata plz  
+WHERE td.loc_id = co.loc_id AND  
+hi.id_lvl2 = land.loc_id AND  
+land.text_val ='CH' AND 
+land.text_type='500100001' AND 
+co.loc_id=hi.loc_id AND 
+td.loc_id=hi.loc_id AND 
+td.text_type='500100000' AND 
+plz.loc_id=td.loc_id AND 
+plz.text_type='500300000')
+
+order by td.text_val
+
+;
