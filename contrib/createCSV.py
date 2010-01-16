@@ -17,7 +17,7 @@ for line in ifile:
 
     #map(str, pll)
     plz, lon, lat = map(string.strip, pll)
-           
+
             # Feld 1: eindeutiger Schlüssel (Primary Key)
             # Felder 2 bis 8: hierarchische Verwaltungsgliederung, hier:
             #      Feld  2: Staat (DE == Deutschland)
@@ -32,6 +32,6 @@ for line in ifile:
             # Feld 10: Postleitzahl
 
     values = ("1", "AT", "", "", "", "", "", lon, lat, plz)
-    
+
     ofile.write("%s\n" % (";".join(values)))
 ofile.close()
