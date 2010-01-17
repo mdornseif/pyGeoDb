@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import random, math, sys
 from optparse import OptionParser
 import cairo
 import pygeodb
+from pprint import pprint
 
 def intRGB(r, g, b):
         return (r/255.0, g/255.0, b/255.0)
@@ -73,16 +75,39 @@ for plz, (long, lat, name) in geoitems:
     y.append(lat)
 ctx.init_geoscale(min(x), max(x)-min(x), min(y), max(y)-min(y))
 ctx.set_antialias(cairo.ANTIALIAS_SUBPIXEL)
-ctx.set_line_width(1*c.ctxscale)
-# ctx.stroke_border(self.border)
+ctx.set_line_width(0.3*c.ctxscale)
+
 
 
 # see http://lists.cairographics.org/archives/cairo/2009-June/017459.html for drawing points
 for plz, (long, lat, name) in geoitems:
-    print ctx.geoscale(long, lat)
     ctx.move_to(*ctx.geoscale(long, lat))
     ctx.close_path()
-
 ctx.stroke()
-ctx.fill()
 
+import voronoi
+pts = []
+for plz, (long, lat, name) in geoitems:
+    pts.append(voronoi.Site(long,lat))
+
+points, lines, edges = voronoi.computeVoronoiDiagram(pts)
+
+pprint(points)
+pprint(lines)
+pprint(edges)
+
+ctx.set_line_width(0.1*c.ctxscale)
+
+for (l, p1, p2) in edges:
+    x1 = y1 = x2 = y2 = None
+    if p1 > -1:
+        x1, y1 = points[p1]
+    if p2 > -1:
+        x2, y2 = points[p2]
+    if p1 > -1 and p2 > -1:
+        print "(%f, %f) -> (%f, %f)" % (x1, y1, x2, y2)
+        ctx.move_to(*ctx.geoscale(x1, y1))
+        ctx.line_to(*ctx.geoscale(x2, y2))
+        ctx.stroke()
+
+ctx.fill()

@@ -29,7 +29,7 @@ distanz_liste = sort(locations, referenz)
 
 import math
 import operator
-from plzdata import geodata
+from pygeodb.plzdata import geodata
 
 class PLZ:
     def __init__(self, plz, land='de'):
