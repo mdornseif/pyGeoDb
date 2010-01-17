@@ -4,7 +4,7 @@ import pygeodb
 from sqlobject import *
 
 if __name__ == "__main__":
-    connection_string = 'sqlite:/Users/chris/Programmieren/eclipse/workspace/pygeodb/src/database2'
+    connection_string = 'sqlite:///Users/md/code2/git/pyGeoDb/database.db'
     connection = connectionForURI(connection_string)
     sqlhub.processConnection = connection
 
