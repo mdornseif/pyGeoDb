@@ -21,9 +21,18 @@ PyGeoDb - an Interfact op OpenGeoDb
 -----------------------------------
 
 
+http://www.raymondhill.net/voronoi/voronoi.php
+
+
 Alternativen
 ------------
 
  * d9t.gis[d9tgis] is a very Zope oriented Python library to use OpenGeoDb data
+ * http://www.edith-distance.de/pdf/doku.pdf
+ * http://www.ebaas.de/ebaas-distance-faq/
+ * http://www.internet-marketing-service.eu/?id=20
+ * http://www.mprobst.de/OpenGeoNearestNeighbours/website/index.html
+ * http://commons.wikimedia.org/wiki/File:German_postcode_information.png
+
 
 [d9tgis]: http://pypi.python.org/pypi/d9t.gis

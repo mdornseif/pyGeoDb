@@ -7,4 +7,4 @@ Created by Maximillian Dornseif on 2010-01-16.
 Copyright (c) 2010 HUDORA. All rights reserved.
 """
 
-from pygeodb import *
+from pygeodb_core import *

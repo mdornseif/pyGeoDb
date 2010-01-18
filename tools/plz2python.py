@@ -27,7 +27,7 @@ for line in sys.stdin:
 
     zipcode=str(values[9])
     city=values[6]
-    country=str(values[1])
+    country=str(values[1]).lower()
     longitude=float(values[7])
     latitude=float(values[8])
     if not country in geodata:
