@@ -18,7 +18,7 @@ maps:
 	PYTHONPATH=. python tools/plz_draw --frontier --voronoi maps/deutschland_gebiete.svg
 	gzip -c < maps/deutschland_gebiete.svg >  maps/deutschland_gebiete.svgz
 	PYTHONPATH=. python tools/plz_draw --frontier --voronoi maps/deutschland_gebiete.eps
-	gzip maps/deutschland_gebiete.eps
+	gzip -c < maps/deutschland_gebiete.eps > maps/deutschland_gebiete.eps.gz
 	#PYTHONPATH=. python tools/plz_draw --frontier --voronoi maps/deutschland.ps
 
 	PYTHONPATH=. python tools/plz_draw --frontier --center=250 maps/deutschland.pdf
@@ -27,8 +27,8 @@ maps:
 	PYTHONPATH=. python tools/plz_draw --frontier --center=250 maps/deutschland.svg
 	gzip -c < maps/deutschland.svg >  maps/deutschland.svgz
 	PYTHONPATH=. python tools/plz_draw --frontier --center=250 maps/deutschland.eps
-	gzip maps/deutschland.eps
+	gzip -c < maps/deutschland.eps > maps/deutschland.eps.gz
 	#PYTHONPATH=. python tools/plz_draw --frontier --voronoi maps/deutschland.ps
-	rm maps/tmp.png  maps/*.svg
+	rm maps/tmp.png  maps/*.svg maps/*.eps
 
 .PHONY: maps
