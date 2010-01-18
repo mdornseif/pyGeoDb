@@ -109,7 +109,7 @@ for plz, (long, lat, name) in geoitems:
 ctx.stroke()
 
 # calculate voronoi diagram for plz areas
-import voronoi
+from pygeodb import voronoi
 pts = []
 for plz, (long, lat, name) in geoitems:
     if plz.startswith('422'):
