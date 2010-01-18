@@ -1,5 +1,12 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# encoding: utf-8
+"""
+draw_germany_borders.py Draws germany
+
+Created by Maximillian Dornseif on 2010-01-18.
+Copyright (c) 2010 HUDORA. All rights reserved.
+"""
+
 import random, math, sys
 from optparse import OptionParser
 import cairo
@@ -9,10 +16,8 @@ from pprint import pprint
 def intRGB(r, g, b):
         return (r/255.0, g/255.0, b/255.0)
 
-HIGHLIGHT=intRGB(0xff, 0x72, 0x72)
-
 class NiceCtx(cairo.Context):
-    defaultBorderColour = intRGB(0x7d, 0x7d, 0x7d)
+    defaultBorderColour = intRGB(0x7d/255.0, 0x7d/255.0, 0x7d/255.0)
     def stroke_border(self, border):
         src = self.get_source()
         width = self.get_line_width()
@@ -63,7 +68,6 @@ c = Canvas(480, 640, 'deutschlandgrenzen.pdf')
 ctx = c.ctx()
 ctx.set_line_cap(cairo.LINE_CAP_ROUND)
 ctx.set_line_join(cairo.LINE_JOIN_ROUND)
-# ctx.set_source_rgb(*HIGHLIGHT)
 
 from pygeodb.borderdata import deutschgrenzen
 geoitems = pygeodb.geodata['de'].items()
@@ -116,12 +120,23 @@ for plz, (long, lat, name) in geoitems:
         pts.append(voronoi.Site(long,lat))
         print long, lat
 
-points, lines, edges = voronoi.computeVoronoiDiagram(pts)
+points, lines, edges, edges2input = voronoi.computeVoronoiDiagram(pts)
 
 pprint(points)
 pprint(lines)
 pprint(edges)
+pprint(edges2input)
 
+print pts[3].x, pts[3].y
+ctx.set_line_width(0.01*c.ctxscale)
+for (l, p1, p2) in edges2input:
+    if p1 == 3 or p2 == 3:
+        print (l, p1, p2), points[p1], points[p2]
+        ctx.move_to(*ctx.geoscale(*points[p1]))
+        ctx.line_to(*ctx.geoscale(*points[p2]))
+        ctx.stroke()
+        
+        
 # draw voronoi diagram for plz areas
 ctx.set_line_width(0.1*c.ctxscale)
 for (l, p1, p2) in edges:

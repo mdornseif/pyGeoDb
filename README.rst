@@ -20,7 +20,6 @@ fast ausschliesslich mit GeoClassPHP[3] verwendet. Für Python gibt es keine wei
 PyGeoDb - an Interfact op OpenGeoDb
 -----------------------------------
 
-
 http://www.raymondhill.net/voronoi/voronoi.php
 
 

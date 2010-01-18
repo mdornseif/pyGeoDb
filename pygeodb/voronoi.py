@@ -105,7 +105,7 @@ BIG_FLOAT = 1e38
 #------------------------------------------------------------------
 class Context(object):
     def __init__(self):
-        self.doPrint = 1
+        self.doPrint = 0
         self.debug   = 0
         self.plot    = 0
         self.triangulate = False
@@ -113,6 +113,7 @@ class Context(object):
         self.lines     = []    # equation of line 3-tuple (a b c), for the equation of the line a*x+b*y = c  
         self.edges     = []    # edge 3-tuple: (line index, vertex 1 index, vertex 2 index)   if either vertex index is -1, the edge extends to infiinity
         self.triangles = []    # 3-tuple of vertex indices
+        self.edges2input = []
 
     def circle(self,x,y,rad):
         pass
@@ -740,7 +741,7 @@ def computeVoronoiDiagram(points):
     siteList = SiteList(points)
     context  = Context()
     voronoi(siteList,context)
-    return (context.vertices,context.lines,context.edges)
+    return (context.vertices,context.lines,context.edges,context.edges2input)
 
 #------------------------------------------------------------------
 def computeDelaunayTriangulation(points):

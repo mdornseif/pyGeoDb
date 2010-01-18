@@ -1,0 +1,226 @@
+#!/usr/bin/env python
+# encoding: utf-8
+u"""plz_draw - draws maps of germany displaying postal codes
+
+"""
+
+# Created by Maximillian Dornseif on 2010-01-17.
+# Copyright (c) 2010 HUDORA. All rights reserved.
+
+
+from optparse import OptionParser
+import random, math, sys
+from optparse import OptionParser
+import cairo
+import pygeodb
+from pprint import pprint
+
+
+class NiceCtx(cairo.Context):
+    defaultBorderColour = (0x7d/255.0, 0x7d/255.0, 0x7d/255.0)
+    def stroke_border(self, border):
+        src = self.get_source()
+        width = self.get_line_width()
+        self.set_source_rgba(*self.defaultBorderColour)
+        self.stroke_preserve()
+        self.set_source(src)
+        self.set_line_width(width - (border * 2))
+        self.stroke()
+
+    def init_geoscale(self, minx, xwidth, miny, yheigth):
+        self.minx = minx
+        self.miny = miny
+        self.xwidth = xwidth
+        self.yheigth = yheigth
+        self.geoscalefactor = 1 / max([xwidth, yheigth])
+        self.geoscalefactor = self.geoscalefactor
+
+    def geoscale(self, x, y):
+        # we use 1.35 for a very simple "projection"
+        return (x-self.minx)*self.geoscalefactor, ((y-self.miny)*self.geoscalefactor*-1.35) + 1.35
+
+
+class Canvas:
+    def __init__(self, width, height, filename):
+        self.width, self.height = width, height
+        self.needs_save = False
+        if filename.endswith('.pdf'):
+            self.surface = cairo.PDFSurface(filename, width, height)
+        elif filename.endswith('.svg'):
+            # the generated SVG seems broken
+            self.surface = cairo.SVGSurface(filename, width, height)
+        elif filename.endswith('.ps'):
+            self.surface = cairo.PSSurface(filename, width, height)
+        elif filename.endswith('.eps'):
+            self.surface = cairo.PSSurface(filename, width, height)
+            self.surface.set_eps(True)
+        else:
+            self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+            self.needs_save = filename
+
+        self.background(1, 1, 1)
+
+    def ctx(self):
+        ctx = NiceCtx(self.surface)
+        ctx.set_line_cap(cairo.LINE_CAP_ROUND)
+        ctx.set_line_join(cairo.LINE_JOIN_ROUND)
+        ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
+        # Basic scaling so that the context is axexctly 1 unit in the smaller dimension
+        # and a little bit more (depending on the aspect ratio) in the other
+        self.ctxscale = min([self.width, self.height])
+        ctx.scale(self.ctxscale, self.ctxscale)
+        self.ctxscale = 1/float(self.ctxscale)
+        return ctx
+
+    def background(self, r, g, b):
+        c = self.ctx()
+        c.set_source_rgb(r, g, b)
+        c.rectangle(0, 0, self.width, self.height)
+        c.fill()
+        c.stroke()
+
+    def save(self):
+        # image background
+        ctx = self.ctx()
+        ctx.fill()
+        # ctx.show_page()
+        if self.needs_save:
+            self.surface.write_to_png(self.needs_save)
+        else:
+            self.surface.finish()
+
+
+def find_dimensions(geoitems, deutschgrenzen):
+    # find dimenions of data set
+    x = []
+    y = []
+    for plz, (long, lat, name) in geoitems:
+        x.append(long)
+        y.append(lat)
+    for track in deutschgrenzen:
+        for long, lat in track:
+            x.append(long)
+            y.append(lat)
+    return min(x), max(x)-min(x), min(y), max(y)-min(y)
+
+
+def set_clipping(ctx, deutschgrenzen, borderskip):
+    # use borders as clipping region
+    for track in deutschgrenzen:
+        ctx.move_to(*ctx.geoscale(*track[0]))
+        for long, lat in track[1::borderskip]:
+            ctx.line_to(*ctx.geoscale(long, lat))
+        ctx.close_path()
+    ctx.clip()
+
+
+def draw_frontier(ctx, deutschgrenzen, borderskip):
+    # draw borders
+    for track in deutschgrenzen:
+        ctx.move_to(*ctx.geoscale(*track[0]))
+        for long, lat in track[1::borderskip]: # Borders are too detailed, only use 20% of data
+            ctx.line_to(*ctx.geoscale(long, lat))
+        ctx.close_path()
+    ctx.stroke()
+
+
+def draw_centers(ctx, geoitems):
+    # draw centers of PLZ areas
+    for plz, (long, lat, name) in geoitems:
+        ctx.move_to(*ctx.geoscale(long, lat))
+        ctx.close_path()
+    ctx.stroke()
+
+
+def draw_voronoilines(ctx, geoitems):
+    # calculate voronoi diagram for plz areas
+    import pygeodb.voronoi
+    pts = []
+    for plz, (long, lat, name) in geoitems:
+        pts.append(pygeodb.voronoi.Site(long,lat))
+    points, lines, edges, edges2input = pygeodb.voronoi.computeVoronoiDiagram(pts)
+
+    # draw voronoi diagram for plz areas
+    for (l, p1, p2) in edges:
+        x1 = y1 = x2 = y2 = None
+        if p1 > -1:
+            x1, y1 = points[p1]
+        else:
+            # pointing to infinity
+            x2, y2 = points[p2]
+            a, b, c = lines[l]
+            x1 = x2 - 0.25
+            y1 = -1 * ((a*x1 - c) / b)
+
+        if p2 > -1:
+            x2, y2 = points[p2]
+        else:
+            # pointing to infinity
+            a, b, c = lines[l]
+            x2 = x1 + 0.25
+            y2 = -1 * ((a*x2 - c) / b)
+
+        # actual drawing
+        if x1 and y1 and x2 and y2:
+            ctx.move_to(*ctx.geoscale(x1, y1))
+            ctx.line_to(*ctx.geoscale(x2, y2))
+            ctx.stroke()
+
+
+def parse_commandline():
+    """Parse the commandline and return information."""
+
+    parser = OptionParser()
+    parser.description = __doc__
+
+    parser.set_usage('usage: %prog [options] outputfile. Try %prog --help for details.')
+    parser.add_option('--width', type='int', default=480,
+                      help='Width of generated Image [%default]')
+    parser.add_option('--heigth', type='int', default=640,
+                      help='Heigth of generated Image [%default]')
+    parser.add_option('-f', '--frontier', action='store_true',
+                      help='Draw german Frontier')
+    parser.add_option('-v', '--voronoi', action='store_true',
+                      help='Draw extrapolated borders between postal areas')
+    parser.add_option('-c', '--center', type='int', default=50,
+                      help='Draw centers of postcode areas, 0 to disable [%default]')
+    parser.add_option('--noclip', action='store_true',
+                      help="Don't clip arround the Border")
+    parser.add_option('-d', '--debug', action='store_true', dest='debug',
+                      help='Enables debugging mode')
+
+    options, args = parser.parse_args()
+    if len(args) != 1: # we expect no non option arguments
+        parser.error('incorrect number of arguments')
+    return options, args
+
+
+def main(options, args):
+    """This implements the actual program functionality"""
+
+    import pygeodb
+    import pygeodb.borderdata
+    geoitems = pygeodb.geodata['de'].items()
+
+    c = Canvas(options.width, options.heigth, args[0])
+    ctx = c.ctx()
+
+    ctx.init_geoscale(*find_dimensions(geoitems, pygeodb.borderdata.deutschgrenzen))
+    ctx.set_line_width((options.center/100.0)*c.ctxscale)
+
+    borderskip = 10 # Borders are too detailed, only use 10% of data
+    if not options.noclip:
+        set_clipping(ctx, pygeodb.borderdata.deutschgrenzen, borderskip)
+    if options.frontier:
+        draw_frontier(ctx, pygeodb.borderdata.deutschgrenzen, borderskip)
+    if options.center:
+        draw_centers(ctx, geoitems)
+
+    if options.voronoi:
+        ctx.set_line_width(0.1*c.ctxscale)
+        draw_voronoilines(ctx, geoitems)
+
+    c.save()
+
+if __name__ == '__main__':
+    main(*parse_commandline())
