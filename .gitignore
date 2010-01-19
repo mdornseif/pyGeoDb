@@ -2,4 +2,6 @@
 *.pyc
 *.bak
 *~
-
+build/
+dist/
+pyGeoDb.egg-info/

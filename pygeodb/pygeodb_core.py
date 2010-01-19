@@ -32,11 +32,11 @@ import operator
 from plzdata import geodata
 
 class PLZ:
-    def __init__(self, plz, land='de'):
+    def __init__(self, plz, land='DE'):
         """The python object for a geolocation"""
-        self.zipcode = plz
-        self.country = land
-        (self.longitude, self.latitude, self.city) = geodata.get(land.lower(), {}).get(plz, (0, 0, None))
+        self.plz = plz
+        self.land = land
+        (self.longitude, self.latitude, self.city) = geodata.get(land.upper(), {}).get(plz, (0, 0, None))
         if not self.city:
             raise ValueError("Unknown PLZ: %s-%s" % (land, plz))
 
@@ -44,26 +44,34 @@ class PLZ:
         """Calculates the distance between two geolocations"""
         fLat, fLon = math.radians(self.latitude), math.radians(self.longitude)
         tLat, tLon = math.radians(other.latitude), math.radians(other.longitude)
-        distance = math.acos(math.sin(tLat) * math.sin(fLat) 
+        distance = math.acos(math.sin(tLat) * math.sin(fLat)
                              + math.cos(tLat) * math.cos(fLat) * math.cos(tLon
-                             - fLon)) * 6380
-        return distance
+                             - fLon)) * 6380000
+        return int(distance)
 
 
-def sort(locations, reference):
+def _obj2plz(obj):
+    if hasattr(obj, 'plz'):
+        return PLZ(obj.plz)
+    elif hasattr(obj, 'get') and obj.get('plz', None):
+        return PLZ(obj['plz'])
+    else:
+        return PLZ(obj)
+
+def distance(locationa, locationb):
+    plza = _obj2plz(locationa)
+    plzb = _obj2plz(locationb)
+    return plza-plzb
+
+
+def distances(reference, locations):
+    reference = _obj2plz(reference)
+    distlist = sorted([(reference - _obj2plz(location), location) for location in locations])
+    return distlist
+
+
+def nearest(reference, locations):
     """Return a sorted list of GeoDBLocation objects. The list is in ascending order
     of the distance relative to the reference location. The reference location must be a
     GeoDBLocation object"""
-
-    distances = {}
-    for location in locations:
-        #distances[location.id] = reference - location
-        distances[location.zipcode] = reference - location
-
-    items = distances.items()
-    items.sort(key = operator.itemgetter(1))
-    return items
-
-
-#print PLZ('42477') - PLZ('50126'), "km"
-#print vars(PLZ('50126'))
+    return [x[1] for x in distances(reference, locations)]

@@ -200,7 +200,7 @@ def main(options, args):
 
     import pygeodb
     import pygeodb.borderdata
-    geoitems = pygeodb.geodata['de'].items()
+    geoitems = pygeodb.geodata['DE'].items()
 
     c = Canvas(options.width, options.heigth, args[0])
     ctx = c.ctx()
