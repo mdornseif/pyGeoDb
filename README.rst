@@ -1,19 +1,19 @@
 PyGeoDb - an Interfact op OpenGeoDb
 ===================================
 
-PyGoeDb is an Python Interface to OpenGeoDb_. It is all about Austrian, German
+PyGeoDb is an Python Interface to OpenGeoDb_. It is all about Austrian, German
 and Swiss Postcodes and City location. The rest of this documentation is in
 german Language.
 
 Die ist ein Python Interface zu OpenGeoDb. "Im Mittelpunkt des Projektes
-OpenGeoDB steht der Aufbau einer möglichst vollständigen Datenbank mit
+OpenGeoDB steht der Aufbau einer moeglichst vollstaendigen Datenbank mit
 Geokoordinaten zu allen Orten und Postleitzahlen (bisher: A,B,CH,D und FL)."
-(OpenGeoDB Wiki) Die Datenbank wird überwiegend zur Umkreissuche_ oder zur
+(OpenGeoDB Wiki) Die Datenbank wird ueberwiegend zur Umkreissuche_ oder zur
 (groben) Geocodierung verwendet. In der PHP-Welt wird es fast ausschliesslich
-mit GeoClassPHP_ verwendet. Für Python gibt es bisher keine weit verbreitete
-Lösung.
+mit GeoClassPHP_ verwendet. Fuer Python gibt es bisher keine weit verbreitete
+Loesung.
 
-Zusätzlich hilft PyGeoDb bei der Erstellung zon Postleitzahlen Karten. Dazu
+Zusaetzlich hilft PyGeoDb bei der Erstellung zon Postleitzahlen Karten. Dazu
 werden neben den OpenGeoDb Daten auch Informationen aus Openstreetmap
 herangezogen.
 
@@ -31,7 +31,7 @@ Entfernungsberechnung
 
 PyGeoDb kann die Entfernung in Metern zwischen zwei Postleitzahlenbereichen
 berechnen. Dazu kann direkt eine Postleitzahl als String, ein dict, oder ein
-Objekt, dass dem AddressProtocol_ entspricht, übergeben werden::
+Objekt, dass dem AddressProtocol_ entspricht, uebergeben werden::
 
     >>> import pygeodb
     >>> pygeodb.distance("42897", "50933") # Strings
@@ -51,14 +51,14 @@ Sortieren nach Entfernung
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 pyGeoDb kann eine Liste von Postleitzahlen nach der Entfernung zu einer
-bestimmten Postleitzahl sortieren. Dabei können, Strings sowie Dicts und
+bestimmten Postleitzahl sortieren. Dabei koennen, Strings sowie Dicts und
 Objekte nach dem AddressProtocol gemischt werden::
 
     >>> pygeodb.nearest("42897", ["42477", "48143", {'plz': "45149"}, loc]) #doctest: +ELLIPSIS
     ['42477', {'plz': '45149'}, <__main__.LocationObject object ...>, '48143']
 
 Wenn es relevant ist, wie weit die verschiedenen Postleitzahlen entfernt sind,
-kann auch dies mit zurück gegeben werden::
+kann auch dies mit zurueck gegeben werden::
 
     >>> pygeodb.distances("42897", ["50933", "42477", "48143", "45149", "42897"])
     [(0, '42897'), (7200, '42477'), (34466, '45149'), (38131, '50933'), (90478, '48143')]
@@ -70,7 +70,7 @@ Fehlerbehandlung
 ~~~~~~~~~~~~~~~~
 
 Wenn eine Postleitzahl unbekannt ist, wird eine ValueError() Exception
-ausgelößt::
+ausgeloesst::
 
     >>> pygeodb.distance("42897", "99999") # Strings
     Traceback (most recent call last):
@@ -82,14 +82,14 @@ Kartengeneriertung
 ~~~~~~~~~~~~~~~~~~
 
 pyGeoDb kann Postleitzhalenkarten generieren. Dazu kommt die Graphikbibliothek
-Pycairo_ zum Einsatz, die natürlich vorher installiert sein muss. Karten
-können im PDF_, PNG_, EPS_ und SVG_ Format erstellt werden.
+Pycairo_ zum Einsatz, die natuerlich vorher installiert sein muss. Karten
+koennen im PDF_, PNG_, EPS_ und SVG_ Format erstellt werden.
 
-Es gibt keine freie Datenquelle zu Grösse und Form der einzelnen
+Es gibt keine freie Datenquelle zu Groesse und Form der einzelnen
 Postleitzahlenbereiche. Jedoch kann man sich der Form der
-Postleitzahlenbereiche annähern, indem man ein `Voronoi-Diagramm`_ erzeugt.
+Postleitzahlenbereiche annaehern, indem man ein `Voronoi-Diagramm`_ erzeugt.
 Dies weicht im Detail zwar deutlich von den realen Postleitzahlenbereichen ab,
-reicht aber für Visualisierungsaufgaben aus. Zur Erzeugung des Graphen, der
+reicht aber fuer Visualisierungsaufgaben aus. Zur Erzeugung des Graphen, der
 die Postleitzahlenbereiche unterteilt, wird der "Fortune Algorithmus"
 werwendet.
 
@@ -111,12 +111,12 @@ die entsprechenden kommandos finden sich in der Datei Makefile unten.
 Autoren
 -------
 
-Der ursprüngliche Entfernungsberechnungscode wurde in 2007 von Christian N
+Der urspruengliche Entfernungsberechnungscode wurde in 2007 von Christian N
 Klein entwickelt. Die Voronoi Berechnung basiert auf Code von Steve Fortune,
 der von Shane O'Sullivan in C++ und dann von Bill Simons in Python konvertiert
 wurde.
 
-Die Datengrundlage für die Polstleitzahlenbereiche stammt vom `OpenGeoDb
+Die Datengrundlage fuer die Polstleitzahlenbereiche stammt vom `OpenGeoDb
 Projekt`_. Die Deutschen grenzen stammen aus `Openstreetmap Project Germany`_.
 
 Die Kartengenerierung stammt von Maximillian Dornseif und basiert auf seinem
