@@ -7,6 +7,10 @@ u"""plz_draw - draws maps of germany displaying postal codes
 # Created by Maximillian Dornseif on 2010-01-17.
 # Copyright (c) 2010 HUDORA. All rights reserved.
 
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import absolute_import
+from future_builtins import map, filter, ascii, hex, oct
 
 from optparse import OptionParser
 import random, math, sys
@@ -137,7 +141,7 @@ def draw_voronoilines(ctx, geoitems):
     import pygeodb.voronoi
     pts = []
     for plz, (long, lat, name) in geoitems:
-        pts.append(pygeodb.voronoi.Site(long,lat))
+        pts.append(pygeodb.voronoi.Site(long, lat))
     points, lines, edges, edges2input = pygeodb.voronoi.computeVoronoiDiagram(pts)
 
     # draw voronoi diagram for plz areas

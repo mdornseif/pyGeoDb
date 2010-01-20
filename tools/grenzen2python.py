@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-grenzen2python.py
+grenzen2python.py - convert OpenStreetMap data to python code
 
 Created by Maximillian Dornseif on 2010-01-17.
 Copyright (c) 2010 HUDORA. All rights reserved.

@@ -2,8 +2,8 @@ PyGeoDb - an Interfact op OpenGeoDb
 ===================================
 
 PyGeoDb is an Python Interface to OpenGeoDb_. It is all about Austrian, German
-and Swiss Postcodes and City location. The rest of this documentation is in
-german Language.
+and Swiss Postcodes and City location. It requires Python 2.6.
+The rest of this documentation is in german Language.
 
 Die ist ein Python Interface zu OpenGeoDb. "Im Mittelpunkt des Projektes
 OpenGeoDB steht der Aufbau einer moeglichst vollstaendigen Datenbank mit

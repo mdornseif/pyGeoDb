@@ -117,7 +117,7 @@ from pygeodb import voronoi
 pts = []
 for plz, (long, lat, name) in geoitems:
     if plz.startswith('422'):
-        pts.append(voronoi.Site(long,lat))
+        pts.append(voronoi.Site(long, lat))
         print long, lat
 
 points, lines, edges, edges2input = voronoi.computeVoronoiDiagram(pts)

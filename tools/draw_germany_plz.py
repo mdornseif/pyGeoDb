@@ -88,7 +88,7 @@ ctx.stroke()
 import voronoi
 pts = []
 for plz, (long, lat, name) in geoitems:
-    pts.append(voronoi.Site(long,lat))
+    pts.append(voronoi.Site(long, lat))
 
 points, lines, edges = voronoi.computeVoronoiDiagram(pts)
 
