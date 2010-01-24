@@ -18,20 +18,20 @@ if __name__ == "__main__":
     #alex = pygeodb.GeoLocation.select(pygeodb.GeoLocation.q.Zipcode.startswith('48143'))
     #md = pygeodb.GeoLocation.select(pygeodb.GeoLocation.q.Zipcode.startswith('42897'))
 
-    print list(ich)
-    print list(alex)
+    print(list(ich))
+    print(list(alex))
 
     ich = ich[0]
     alex = alex[0]
     md = md[0]
 
-    print ich - alex
-    print alex - ich
+    print(ich - alex)
+    print(alex - ich)
 
-    print ich - md
-    print md - alex
+    print(ich - md)
+    print(md - alex)
 
     locations = pygeodb.GeoLocation.select(pygeodb.GeoLocation.q.Zipcode.startswith('40'))
 
     x = pygeodb.sort(locations, ich)
-    print x
+    print(x)

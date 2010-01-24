@@ -105,7 +105,7 @@ for (l, p1, p2) in edges:
     if p2 > -1:
         x2, y2 = points[p2]
     if p1 > -1 and p2 > -1:
-        print "(%f, %f) -> (%f, %f)" % (x1, y1, x2, y2)
+        print("(%f, %f) -> (%f, %f)" % (x1, y1, x2, y2))
         ctx.move_to(*ctx.geoscale(x1, y1))
         ctx.line_to(*ctx.geoscale(x2, y2))
         ctx.stroke()

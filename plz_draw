@@ -20,6 +20,23 @@ import pygeodb
 from pprint import pprint
 
 
+### Next Class and two functions from
+### http://www.bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
+
+class Point:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+
+def ccw(A,B,C):
+    return (C.y-A.y)*(B.x-A.x) > (B.y-A.y)*(C.x-A.x)
+
+def intersect(A,B,C,D):
+    return ccw(A,C,D) != ccw(B,C,D) and ccw(A,B,C) != ccw(A,B,D)
+
+
+
+
 class NiceCtx(cairo.Context):
     defaultBorderColour = (0x7d/255.0, 0x7d/255.0, 0x7d/255.0)
     def stroke_border(self, border):
@@ -142,7 +159,7 @@ def draw_voronoilines(ctx, geoitems):
     pts = []
     for plz, (long, lat, name) in geoitems:
         pts.append(pygeodb.voronoi.Site(long, lat))
-    points, lines, edges, edges2input = pygeodb.voronoi.computeVoronoiDiagram(pts)
+    points, lines, edges = pygeodb.voronoi.computeVoronoiDiagram(pts)
 
     # draw voronoi diagram for plz areas
     for (l, p1, p2) in edges:

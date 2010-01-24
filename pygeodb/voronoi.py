@@ -32,7 +32,7 @@
 #############################################################################
 
 def usage():
-    print """
+    print("""
 voronoi - compute Voronoi diagram or Delaunay triangulation
 
 voronoi [-t -p -d]  [filename]
@@ -69,7 +69,7 @@ On unsorted data uniformly distributed in the unit square, voronoi uses about
 AUTHOR
 Steve J. Fortune (1987) A Sweepline Algorithm for Voronoi Diagrams,
 Algorithmica 2, 153-174.
-"""
+""")
 
 #############################################################################
 #
@@ -113,84 +113,81 @@ class Context(object):
         self.lines     = []    # equation of line 3-tuple (a b c), for the equation of the line a*x+b*y = c  
         self.edges     = []    # edge 3-tuple: (line index, vertex 1 index, vertex 2 index)   if either vertex index is -1, the edge extends to infiinity
         self.triangles = []    # 3-tuple of vertex indices
-        self.edges2input = []
 
-    def circle(self,x,y,rad):
+    def circle(self, x, y, rad):
         pass
 
-    def clip_line(self,edge):
+    def clip_line(self, edge):
         pass
 
-    def line(self,x0,y0,x1,y1):
+    def line(self, x0, y0, x1, y1):
         pass
 
-    def outSite(self,s):
+    def outSite(self, s):
         if(self.debug):
-            print "site (%d) at %f %f" % (s.sitenum, s.x, s.y)
+            print("site (%d) at %f %f" % (s.sitenum, s.x, s.y))
         elif(self.triangulate):
             pass
         elif(self.plot):
             self.circle (s.x, s.y, cradius)
         elif(self.doPrint):
-            print "s %f %f" % (s.x, s.y)
+            print("s %f %f" % (s.x, s.y))
 
-    def outVertex(self,s):
-        self.vertices.append((s.x,s.y))
+    def outVertex(self, s):
+        self.vertices.append((s.x, s.y))
         if(self.debug):
-            print  "vertex(%d) at %f %f" % (s.sitenum, s.x, s.y)
+            print("vertex(%d) at %f %f" % (s.sitenum, s.x, s.y))
         elif(self.triangulate):
             pass
         elif(self.doPrint and not self.plot):
-            print "v %f %f" % (s.x,s.y)
+            print("v %f %f" % (s.x, s.y))
 
-    def outTriple(self,s1,s2,s3):
+    def outTriple(self, s1, s2, s3):
         self.triangles.append((s1.sitenum, s2.sitenum, s3.sitenum))
         if(self.debug):
-            print "circle through left=%d right=%d bottom=%d" % (s1.sitenum, s2.sitenum, s3.sitenum)
+            print("circle through left=%d right=%d bottom=%d" % (s1.sitenum, s2.sitenum, s3.sitenum))
         elif(self.triangulate and self.doPrint and not self.plot):
-            print "%d %d %d" % (s1.sitenum, s2.sitenum, s3.sitenum)
+            print("%d %d %d" % (s1.sitenum, s2.sitenum, s3.sitenum))
 
-    def outBisector(self,edge):
+    def outBisector(self, edge):
         self.lines.append((edge.a, edge.b, edge.c))
         if(self.debug):
-            print "line(%d) %gx+%gy=%g, bisecting %d %d" % (edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum)
+            print("line(%d) %gx+%gy=%g, bisecting %d %d" % (edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum))
         elif(self.triangulate):
             if(self.plot):
                 self.line(edge.reg[0].x, edge.reg[0].y, edge.reg[1].x, edge.reg[1].y)
         elif(self.doPrint and not self.plot):
-            print "l %f %f %f" % (edge.a, edge.b, edge.c)
+            print("l %f %f %f" % (edge.a, edge.b, edge.c))
 
-    def outEdge(self,edge):
+    def outEdge(self, edge):
         sitenumL = -1
         if edge.ep[Edge.LE] is not None:
             sitenumL = edge.ep[Edge.LE].sitenum
         sitenumR = -1
         if edge.ep[Edge.RE] is not None:
             sitenumR = edge.ep[Edge.RE].sitenum
-        self.edges.append((edge.edgenum,sitenumL,sitenumR))
+        self.edges.append((edge.edgenum, sitenumL, sitenumR))
         if(not self.triangulate):
             if self.plot:
                 self.clip_line(edge)
             elif(self.doPrint): 
-                print "e %d" % edge.edgenum,
-                print " %d " % sitenumL,
-                print "%d" % sitenumR
+                print("e %d %d %d" % (edge.edgenum, sitenumL, sitenumR))
 
 #------------------------------------------------------------------
-def voronoi(siteList,context):
-    edgeList  = EdgeList(siteList.xmin,siteList.xmax,len(siteList))
-    priorityQ = PriorityQueue(siteList.ymin,siteList.ymax,len(siteList))
+def voronoi(siteList, context):
+    edgeList  = EdgeList(siteList.xmin, siteList.xmax, len(siteList))
+    priorityQ = PriorityQueue(siteList.ymin, siteList.ymax, len(siteList))
     siteIter = siteList.iterator()
     
     bottomsite = siteIter.next()
     context.outSite(bottomsite)
     newsite = siteIter.next()
-    minpt = Site(-BIG_FLOAT,-BIG_FLOAT)
+    minpt = Site(-BIG_FLOAT, -BIG_FLOAT)
     while True:
         if not priorityQ.isEmpty():
             minpt = priorityQ.getMinPt()
 
-        if (newsite and (priorityQ.isEmpty() or cmp(newsite,minpt) < 0)):
+        if (newsite and (priorityQ.isEmpty() or cmp(newsite, minpt) < 0)):
             # newsite is smallest -  this is a site event
             context.outSite(newsite)
             
@@ -201,33 +198,33 @@ def voronoi(siteList,context):
             # if this halfedge has no edge, bot = bottom site (whatever that is)
             # create a new edge that bisects
             bot  = lbnd.rightreg(bottomsite)     
-            edge = Edge.bisect(bot,newsite)      
+            edge = Edge.bisect(bot, newsite)      
             context.outBisector(edge)
             
             # create a new Halfedge, setting its pm field to 0 and insert 
             # this new bisector edge between the left and right vectors in
             # a linked list
-            bisector = Halfedge(edge,Edge.LE)    
-            edgeList.insert(lbnd,bisector)       
+            bisector = Halfedge(edge, Edge.LE)    
+            edgeList.insert(lbnd, bisector)       
 
             # if the new bisector intersects with the left edge, remove 
             # the left edge's vertex, and put in the new one
             p = lbnd.intersect(bisector)
             if p is not None:
                 priorityQ.delete(lbnd)
-                priorityQ.insert(lbnd,p,newsite.distance(p))
+                priorityQ.insert(lbnd, p, newsite.distance(p))
 
             # create a new Halfedge, setting its pm field to 1
             # insert the new Halfedge to the right of the original bisector
             lbnd = bisector
-            bisector = Halfedge(edge,Edge.RE)     
-            edgeList.insert(lbnd,bisector)        
+            bisector = Halfedge(edge, Edge.RE)     
+            edgeList.insert(lbnd, bisector)        
 
             # if this new bisector intersects with the right Halfedge
             p = bisector.intersect(rbnd)
             if p is not None:
                 # push the Halfedge into the ordered linked list of vertices
-                priorityQ.insert(bisector,p,newsite.distance(p))
+                priorityQ.insert(bisector, p, newsite.distance(p))
             
             newsite = siteIter.next()
 
@@ -249,7 +246,7 @@ def voronoi(siteList,context):
             
             # output the triple of sites, stating that a circle goes through them
             mid = lbnd.rightreg(bottomsite)
-            context.outTriple(bot,top,mid)          
+            context.outTriple(bot, top, mid)          
 
             # get the vertex that caused this event and set the vertex number
             # couldn't do this earlier since we didn't know when it would be processed
@@ -258,10 +255,10 @@ def voronoi(siteList,context):
             context.outVertex(v)
             
             # set the endpoint of the left and right Halfedge to be this vector
-            if lbnd.edge.setEndpoint(lbnd.pm,v):
+            if lbnd.edge.setEndpoint(lbnd.pm, v):
                 context.outEdge(lbnd.edge)
             
-            if rbnd.edge.setEndpoint(rbnd.pm,v):
+            if rbnd.edge.setEndpoint(rbnd.pm, v):
                 context.outEdge(rbnd.edge)
 
             
@@ -276,7 +273,7 @@ def voronoi(siteList,context):
             # to the right of it, then swap them and set 'pm' to RIGHT
             pm = Edge.LE
             if bot.y > top.y:
-                bot,top = top,bot
+                bot, top = top, bot
                 pm = Edge.RE
 
             # Create an Edge (or line) that is between the two Sites.  This 
@@ -317,7 +314,7 @@ def voronoi(siteList,context):
 #------------------------------------------------------------------
 def isEqual(a,b,relativeError=TOLERANCE):
     # is nearly equal to within the allowed relative error
-    norm = max(abs(a),abs(b))
+    norm = max(abs(a), abs(b))
     return (norm < relativeError) or (abs(a - b) < (relativeError * norm))
 
 #------------------------------------------------------------------
@@ -328,9 +325,9 @@ class Site(object):
         self.sitenum = sitenum
 
     def dump(self):
-        print "Site #%d (%g, %g)" % (self.sitenum,self.x,self.y)
+        print("Site #%d (%g, %g)" % (self.sitenum, self.x, self.y))
 
-    def __cmp__(self,other):
+    def __cmp__(self, other):
         if self.y < other.y:
             return -1
         elif self.y > other.y:
@@ -342,7 +339,7 @@ class Site(object):
         else:
             return 0
 
-    def distance(self,other):
+    def distance(self, other):
         dx = self.x - other.x
         dy = self.y - other.y
         return math.sqrt(dx*dx + dy*dy)
@@ -358,14 +355,14 @@ class Edge(object):
         self.a = 0.0
         self.b = 0.0
         self.c = 0.0
-        self.ep  = [None,None]
-        self.reg = [None,None]
+        self.ep  = [None, None]
+        self.reg = [None, None]
         self.edgenum = 0
 
     def dump(self):
-        print "(#%d a=%g, b=%g, c=%g)" % (self.edgenum,self.a,self.b,self.c)
-        print "ep",self.ep
-        print "reg",self.reg
+        print("(#%d a=%g, b=%g, c=%g)" % (self.edgenum, self.a, self.b, self.c))
+        print("ep",self.ep)
+        print("reg",self.reg)
 
     def setEndpoint(self, lrFlag, site):
         self.ep[lrFlag] = site
@@ -374,7 +371,7 @@ class Edge(object):
         return True
 
     @staticmethod
-    def bisect(s1,s2):
+    def bisect(s1, s2):
         newedge = Edge()
         newedge.reg[0] = s1 # store the sites that this edge is bisecting
         newedge.reg[1] = s2
@@ -418,18 +415,18 @@ class Halfedge(object):
         self.ystar  = BIG_FLOAT
 
     def dump(self):
-        print "Halfedge--------------------------"
-        print "left: ",    self.left  
-        print "right: ",   self.right 
-        print "edge: ",    self.edge  
-        print "pm: ",      self.pm    
-        print "vertex: ",
+        print("Halfedge--------------------------")
+        print("left: ",    self.left)  
+        print("right: ",   self.right) 
+        print("edge: ",    self.edge)  
+        print("pm: ",      self.pm)    
+        print("vertex: ")
         if self.vertex: self.vertex.dump()
-        else: print "None"
-        print "ystar: ",   self.ystar 
+        else: print("None")
+        print("ystar: ",   self.ystar) 
 
 
-    def __cmp__(self,other):
+    def __cmp__(self, other):
         if self.ystar > other.ystar:
             return 1
         elif self.ystar < other.ystar:
@@ -441,7 +438,7 @@ class Halfedge(object):
         else:
             return 0
 
-    def leftreg(self,default):
+    def leftreg(self, default):
         if not self.edge: 
             return default
         elif self.pm == Edge.LE:
@@ -449,7 +446,7 @@ class Halfedge(object):
         else:
             return self.edge.reg[Edge.RE]
 
-    def rightreg(self,default):
+    def rightreg(self, default):
         if not self.edge: 
             return default
         elif self.pm == Edge.LE:
@@ -459,7 +456,7 @@ class Halfedge(object):
 
 
     # returns True if p is to right of halfedge self
-    def isPointRightOf(self,pt):
+    def isPointRightOf(self, pt):
         e = self.edge
         topsite = e.reg[1]
         right_of_site = pt.x > topsite.x
@@ -502,7 +499,7 @@ class Halfedge(object):
 
     #--------------------------
     # create a new site where the Halfedges el1 and el2 intersect
-    def intersect(self,other):
+    def intersect(self, other):
         e1 = self.edge
         e2 = other.edge
         if (e1 is None) or (e2 is None):
@@ -513,12 +510,12 @@ class Halfedge(object):
             return None
 
         d = e1.a * e2.b - e1.b * e2.a
-        if isEqual(d,0.0):
+        if isEqual(d, 0.0):
             return None
 
         xint = (e1.c*e2.b - e2.c*e1.b) / d
         yint = (e2.c*e1.a - e1.c*e2.a) / d
-        if(cmp(e1.reg[1],e2.reg[1]) < 0):
+        if(cmp(e1.reg[1], e2.reg[1]) < 0):
             he = self
             e = e1
         else:
@@ -532,14 +529,14 @@ class Halfedge(object):
 
         # create a new site at the point of intersection - this is a new 
         # vector event waiting to happen
-        return Site(xint,yint)
+        return Site(xint, yint)
 
         
 
 #------------------------------------------------------------------
 class EdgeList(object):
-    def __init__(self,xmin,xmax,nsites):
-        if xmin > xmax: xmin,xmax = xmax,xmin
+    def __init__(self, xmin, xmax, nsites):
+        if xmin > xmax: xmin, xmax = xmax, xmin
         self.hashsize = int(2*math.sqrt(nsites+4))
         
         self.xmin   = xmin
@@ -553,19 +550,19 @@ class EdgeList(object):
         self.hash[0]  = self.leftend
         self.hash[-1] = self.rightend
 
-    def insert(self,left,he):
+    def insert(self, left, he):
         he.left  = left
         he.right = left.right
         left.right.left = he
         left.right = he
 
-    def delete(self,he):
+    def delete(self, he):
         he.left.right = he.right
         he.right.left = he.left
         he.edge = Edge.DELETED
 
     # Get entry from hash table, pruning any deleted nodes 
-    def gethash(self,b):
+    def gethash(self, b):
         if(b < 0 or b >= self.hashsize):
             return None
         he = self.hash[b]
@@ -576,7 +573,7 @@ class EdgeList(object):
         self.hash[b] = None
         return None
 
-    def leftbnd(self,pt):
+    def leftbnd(self, pt):
         # Use hash table to get close to desired halfedge 
         bucket = int(((pt.x - self.xmin)/self.deltax * self.hashsize))
         
@@ -615,7 +612,7 @@ class EdgeList(object):
 
 #------------------------------------------------------------------
 class PriorityQueue(object):
-    def __init__(self,ymin,ymax,nsites):
+    def __init__(self, ymin, ymax, nsites):
         self.ymin = ymin
         self.deltay = ymax - ymin
         self.hashsize = int(4 * math.sqrt(nsites))
@@ -631,19 +628,19 @@ class PriorityQueue(object):
     def isEmpty(self):
         return self.count == 0
 
-    def insert(self,he,site,offset):
+    def insert(self, he, site, offset):
         he.vertex = site
         he.ystar  = site.y + offset
         last = self.hash[self.getBucket(he)]
         next = last.qnext
-        while((next is not None) and cmp(he,next) > 0):
+        while((next is not None) and cmp(he, next) > 0):
             last = next
             next = last.qnext
         he.qnext = last.qnext
         last.qnext = he
         self.count += 1
 
-    def delete(self,he):
+    def delete(self, he):
         if (he.vertex is not None):
             last = self.hash[self.getBucket(he)]
             while last.qnext is not he:
@@ -652,7 +649,7 @@ class PriorityQueue(object):
             self.count -= 1
             he.vertex = None
 
-    def getBucket(self,he):
+    def getBucket(self, he):
         bucket = int(((he.ystar - self.ymin) / self.deltay) * self.hashsize)
         if bucket < 0: bucket = 0
         if bucket >= self.hashsize: bucket = self.hashsize-1
@@ -665,7 +662,7 @@ class PriorityQueue(object):
         he = self.hash[self.minidx].qnext
         x = he.vertex.x
         y = he.ystar
-        return Site(x,y)
+        return Site(x, y)
 
     def popMinHalfedge(self):
         curr = self.hash[self.minidx].qnext
@@ -676,7 +673,7 @@ class PriorityQueue(object):
 
 #------------------------------------------------------------------
 class SiteList(object):
-    def __init__(self,pointList):
+    def __init__(self, pointList):
         self.__sites = []
         self.__sitenum = 0
 
@@ -684,20 +681,20 @@ class SiteList(object):
         self.__ymin = pointList[0].y
         self.__xmax = pointList[0].x
         self.__ymax = pointList[0].y
-        for i,pt in enumerate(pointList):
-            self.__sites.append(Site(pt.x,pt.y,i))
+        for i, pt in enumerate(pointList):
+            self.__sites.append(Site(pt.x, pt.y, i))
             if pt.x < self.__xmin: self.__xmin = pt.x
             if pt.y < self.__ymin: self.__ymin = pt.y
             if pt.x > self.__xmax: self.__xmax = pt.x
             if pt.y > self.__ymax: self.__ymax = pt.y
         self.__sites.sort()
 
-    def setSiteNumber(self,site):
+    def setSiteNumber(self, site):
         site.sitenum = self.__sitenum
         self.__sitenum += 1
 
     class Iterator(object):
-        def __init__(this,lst):  this.generator = (s for s in lst)
+        def __init__(this, lst):  this.generator = (s for s in lst)
         def __iter__(this):      return this
         def next(this): 
             try:
@@ -740,8 +737,8 @@ def computeVoronoiDiagram(points):
     """
     siteList = SiteList(points)
     context  = Context()
-    voronoi(siteList,context)
-    return (context.vertices,context.lines,context.edges,context.edges2input)
+    voronoi(siteList, context)
+    return (context.vertices, context.lines, context.edges)
 
 #------------------------------------------------------------------
 def computeDelaunayTriangulation(points):
@@ -751,14 +748,14 @@ def computeDelaunayTriangulation(points):
     """
     siteList = SiteList(points)
     context  = Context()
-    context.triangulate = true
-    voronoi(siteList,context)
+    context.triangulate = True
+    voronoi(siteList, context)
     return context.triangles
 
 #-----------------------------------------------------------------------------
 if __name__=="__main__":
     try:
-        optlist,args = getopt.getopt(sys.argv[1:],"thdp")
+        optlist, args = getopt.getopt(sys.argv[1:], "thdp")
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -776,12 +773,12 @@ if __name__=="__main__":
         pts = []
         fp = sys.stdin
         if len(args) > 0:
-            fp = open(args[0],'r')
+            fp = open(args[0], 'r')
         for line in fp:
             fld = line.split()
             x = float(fld[0])
             y = float(fld[1])
-            pts.append(Site(x,y))
+            pts.append(Site(x, y))
         if len(args) > 0: fp.close()
 
     if doHelp or len(pts) == 0:
@@ -789,5 +786,5 @@ if __name__=="__main__":
         sys.exit(2)
 
     sl = SiteList(pts)
-    voronoi(sl,c)
+    voronoi(sl, c)
 

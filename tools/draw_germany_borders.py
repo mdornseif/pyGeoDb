@@ -118,7 +118,7 @@ pts = []
 for plz, (long, lat, name) in geoitems:
     if plz.startswith('422'):
         pts.append(voronoi.Site(long, lat))
-        print long, lat
+        print(long, lat)
 
 points, lines, edges, edges2input = voronoi.computeVoronoiDiagram(pts)
 
@@ -127,11 +127,11 @@ pprint(lines)
 pprint(edges)
 pprint(edges2input)
 
-print pts[3].x, pts[3].y
+print(pts[3].x, pts[3].y)
 ctx.set_line_width(0.01*c.ctxscale)
 for (l, p1, p2) in edges2input:
     if p1 == 3 or p2 == 3:
-        print (l, p1, p2), points[p1], points[p2]
+        print((l, p1, p2), points[p1], points[p2])
         ctx.move_to(*ctx.geoscale(*points[p1]))
         ctx.line_to(*ctx.geoscale(*points[p2]))
         ctx.stroke()
@@ -146,18 +146,18 @@ for (l, p1, p2) in edges:
     else:
         x2, y2 = points[p2]
         a, b, c = lines[l]
-        print "%f*x + %f*y = %f" % (a, b, c)
+        print("%f*x + %f*y = %f" % (a, b, c))
         x1 = x2 - 0.25
         y1 = -1 * ((a*x1 - c) / b)
     if p2 > -1:
         x2, y2 = points[p2]
     else:
         a, b, c = lines[l]
-        print "%f*x + %f*y = %f" % (a, b, c)
+        print("%f*x + %f*y = %f" % (a, b, c))
         x2 = x1 + 0.25
         y2 = -1 * ((a*x2 - c) / b)
     if x1 and y1 and x2 and y2:
-        print x1, y1, x2, y2
+        print(x1, y1, x2, y2)
         ctx.move_to(*ctx.geoscale(x1, y1))
         ctx.line_to(*ctx.geoscale(x2, y2))
         ctx.stroke()
