@@ -19,13 +19,13 @@ data: pygeodb/borderdata.py pygeodb/plzdata.py
 maps:
 	python ./plz_draw --frontier --center=250 --width=480 --heigth=640 maps/deutschland_small.png
 
-	python ./plz_draw --frontier --voronoi maps/deutschland_gebiete.pdf
-	python ./plz_draw --frontier --voronoi --width=1440 --heigth=1920 maps/tmp.png
-	python ./plz_draw --frontier --voronoi maps/deutschland_gebiete.svg
+	python ./plz_draw --frontier --borders maps/deutschland_gebiete.pdf
+	python ./plz_draw --frontier --borders --width=1440 --heigth=1920 maps/tmp.png
+	python ./plz_draw --frontier --borders maps/deutschland_gebiete.svg
 	gzip -nc < maps/deutschland_gebiete.svg >  maps/deutschland_gebiete.svgz
-	python ./plz_draw --frontier --voronoi maps/deutschland_gebiete.eps
+	python ./plz_draw --frontier --borders maps/deutschland_gebiete.eps
 	gzip -nc < maps/deutschland_gebiete.eps > maps/deutschland_gebiete.eps.gz
-	#PYTHONPATH=. python ./plz_draw --frontier --voronoi maps/deutschland.ps
+	#PYTHONPATH=. python ./plz_draw --frontier --borders maps/deutschland.ps
 
 	python ./plz_draw --frontier --center=250 maps/deutschland.pdf
 	python ./plz_draw --frontier --center=250 --width=1440 --heigth=1920 maps/deutschland.png
@@ -33,7 +33,7 @@ maps:
 	gzip -nc < maps/deutschland.svg >  maps/deutschland.svgz
 	python ./plz_draw --frontier --center=250 maps/deutschland.eps
 	gzip -nc < maps/deutschland.eps > maps/deutschland.eps.gz
-	#PYTHONPATH=. python ./plz_draw --frontier --voronoi maps/deutschland.ps
+	#PYTHONPATH=. python ./plz_draw --frontier maps/deutschland.ps
 	rm maps/tmp.png  maps/*.svg maps/*.eps
 
 clean:

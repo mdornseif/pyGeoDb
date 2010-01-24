@@ -22,8 +22,8 @@ herangezogen.
 .. _GeoClassPHP: http://sourceforge.net/projects/geoclassphp/
 
 
-Nutzung
--------
+Entfernungen
+------------
 
 
 Entfernungsberechnung
@@ -79,11 +79,14 @@ ausgeloesst::
 
 
 Kartengeneriertung
-~~~~~~~~~~~~~~~~~~
+------------------
 
 pyGeoDb kann Postleitzhalenkarten generieren. Dazu kommt die Graphikbibliothek
 Pycairo_ zum Einsatz, die natuerlich vorher installiert sein muss. Karten
 koennen im PDF_, PNG_, EPS_ und SVG_ Format erstellt werden.
+
+.. image:: http://static.23.nu/md/Pictures/beispiel_leitbereiche.png
+
 
 Es gibt keine freie Datenquelle zu Groesse und Form der einzelnen
 Postleitzahlenbereiche. Jedoch kann man sich der Form der
@@ -95,7 +98,7 @@ werwendet.
 
 Rufen Sie `./plz_draw --help` auf, um die Aufrufparameter angezeigt zu
 bekommen. Beispieldateien kann man durch das Kommando `make maps` erstellen -
-die entsprechenden kommandos finden sich in der Datei Makefile unten.
+die entsprechenden kommandos finden sich in der Datei Makefile, unten.
 
 .. _Pycairo: http://cairographics.org/pycairo/ 
 .. _PDF: https://github.com/mdornseif/pyGeoDb/raw/master/maps/deutschland_gebiete.pdf
@@ -106,7 +109,6 @@ die entsprechenden kommandos finden sich in der Datei Makefile unten.
 .. _voronoiexample1: http://www.raymondhill.net/voronoi/voronoi.php
 .. _voronoiexample2: http://www.diku.dk/hjemmesider/studerende/duff/Fortune/
 
-.. image:: https://github.com/mdornseif/pyGeoDb/raw/master/maps/deutschland_small.png
 
 Autoren
 -------

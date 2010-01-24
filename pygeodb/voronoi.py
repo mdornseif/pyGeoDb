@@ -150,7 +150,7 @@ class Context(object):
             print("%d %d %d" % (s1.sitenum, s2.sitenum, s3.sitenum))
 
     def outBisector(self, edge):
-        self.lines.append((edge.a, edge.b, edge.c))
+        self.lines.append((edge.a, edge.b, edge.c, edge.reg[0].plz, edge.reg[1].plz))
         if(self.debug):
             print("line(%d) %gx+%gy=%g, bisecting %d %d" % (edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum))
         elif(self.triangulate):
@@ -607,6 +607,7 @@ class EdgeList(object):
         # Update hash table and reference counts
         if(bucket > 0 and bucket < self.hashsize-1):
             self.hash[bucket] = he
+        he.plz = pt.plz
         return he
 
 
@@ -683,6 +684,8 @@ class SiteList(object):
         self.__ymax = pointList[0].y
         for i, pt in enumerate(pointList):
             self.__sites.append(Site(pt.x, pt.y, i))
+            if hasattr(pt, 'plz'):
+                self.__sites[-1].plz = pt.plz
             if pt.x < self.__xmin: self.__xmin = pt.x
             if pt.y < self.__ymin: self.__ymin = pt.y
             if pt.x > self.__xmax: self.__xmax = pt.x
