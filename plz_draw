@@ -23,6 +23,13 @@ import random
 debug = False
 
 
+def colorstring_to_value(colstr):
+    if not colstr.startswith('#') or len(colstr) != 4:
+        raise RuntimeError("invalid color %r" % colstr)
+    r, g, b = [float(int(x, 16))/0xf for x in list(colstr[1:])]
+    return (r, g, b)
+
+
 class NiceCtx(cairo.Context):
     defaultBorderColour = (0x7d/255.0, 0x7d/255.0, 0x7d/255.0)
     def stroke_border(self, border):
@@ -142,17 +149,57 @@ def should_draw(plz, limit):
         return False
 
 
-def draw_centers(ctx, geoitems, limit):
-    # draw centers of PLZ areas
-    for plz, (long, lat, name) in geoitems:
-        if should_draw(plz, limit):
-            ctx.move_to(*ctx.geoscale(long, lat))
-            ctx.close_path()
+def get_centercolor(plz, options):
+    if plz in options.centercolors:
+        return options.centercolors[plz]
+    if plz[:4] in options.centercolors:
+        return options.centercolors[plz[:4]]
+    if plz[:3] in options.centercolors:
+        return options.centercolors[plz[:3]]
+    if plz[:2] in options.centercolors:
+        return options.centercolors[plz[:2]]
+    if plz[:1] in options.centercolors:
+        return options.centercolors[plz[:1]]
+    return None
+
+
+def draw_centers(ctx, geoitems, options):
+    """draw centers of PLZ areas"""
+    
+    ctx.set_source_rgb(*colorstring_to_value(options.centerdefaultcolor))
+    for plz, (long, lat, name) in sorted(geoitems):
+        if should_draw(plz, options.limit):
+            centercolor = get_centercolor(plz, options)
+            if centercolor:
+                ctx.stroke()
+                ctx.set_source_rgb(*centercolor)
+                ctx.move_to(*ctx.geoscale(long, lat))
+                ctx.close_path()
+                ctx.stroke()
+                ctx.set_source_rgb(*colorstring_to_value(options.centerdefaultcolor))
+            else:
+                ctx.move_to(*ctx.geoscale(long, lat))
+                ctx.close_path()
     ctx.stroke()
 
 
 class mySite(object):
     pass
+
+
+def get_areacolor(plz, options):
+    if plz in options.areacolors:
+        return options.areacolors[plz]
+    if plz[:4] in options.areacolors:
+        return options.areacolors[plz[:4]]
+    if plz[:3] in options.areacolors:
+        return options.areacolors[plz[:3]]
+    if plz[:2] in options.areacolors:
+        return options.areacolors[plz[:2]]
+    if plz[:1] in options.areacolors:
+        return options.areacolors[plz[:1]]
+    return None
+
 
 def draw_voronoi(ctx, geoitems, options):
     # calculate voronoi diagram for plz areas
@@ -196,7 +243,7 @@ def draw_voronoi(ctx, geoitems, options):
                 ctx.line_to(*ctx.geoscale(x2, y2))
                 ctx.stroke()
     
-    if not options.areas:
+    if not options.areas and not options.areacolors:
         return # we are finished
     
     # calculate per PLZ polygons
@@ -229,16 +276,23 @@ def draw_voronoi(ctx, geoitems, options):
             lenpolygon = len(polygon)
         
         # draw the beast
+        ctx.set_source_rgba(0.5, 0.5, 0.5)
         if len(polygon) > 2:
-            firstdigit = float(plz[0])/10.0
-            ctx.set_source_rgba(firstdigit, 1-firstdigit, 0.5 + (random.random()/2))
-            ctx.set_source_rgba(firstdigit, 1-firstdigit, 0.5)
-            ctx.move_to(*ctx.geoscale(*polygon[0]))
-            for point in polygon[1:]:
-                ctx.line_to(*ctx.geoscale(*point))
-            ctx.close_path()
-            ctx.fill()
-        
+            areacolor = get_areacolor(plz, options)
+            if areacolor:
+                ctx.set_source_rgb(*areacolor)
+                ctx.move_to(*ctx.geoscale(*polygon[0]))
+                for point in polygon[1:]:
+                    ctx.line_to(*ctx.geoscale(*point))
+                ctx.close_path()
+                ctx.fill()
+                ctx.set_source_rgba(0.5, 0.5, 0.5)
+            elif options.areas:
+                ctx.move_to(*ctx.geoscale(*polygon[0]))
+                for point in polygon[1:]:
+                    ctx.line_to(*ctx.geoscale(*point))
+                ctx.close_path()
+                ctx.fill()
 
 
 def parse_commandline():
@@ -258,10 +312,16 @@ def parse_commandline():
                       help='Draw german Frontier')
     parser.add_option('-b', '--borders', action='store_true',
                       help='Draw german Frontier')
-    parser.add_option('-a', '--areas', action='store_true',
-                      help='Fill postal areas')
     parser.add_option('-c', '--center', type='int', default=50,
                       help='Draw centers of postcode areas, 0 to disable [%default]')
+    parser.add_option('--centerdefaultcolor', type='string', default='#000',
+                      help='Draw centers in this color [%default]')
+    parser.add_option('--cencol', action='append',
+                      help='set color for one or many PLZ centers, e.g. --cencol=424:#f00')
+    parser.add_option('-a', '--areas', action='store_true',
+                      help='Fill postal areas')
+    parser.add_option('--acol', action='append',
+                      help='set color for one or many PLZ areas, e.g. --acol=423:#f00')
     parser.add_option('--noclip', action='store_true',
                       help="Don't clip arround the Border")
     parser.add_option('-d', '--debug', action='store_true', dest='debug',
@@ -282,25 +342,35 @@ def main(options, args):
     geoitems = pygeodb.geodata['DE'].items()
 
     debug = options.debug
+    options.centercolors = {}
+    options.areacolors = {}
+
+    if options.cencol:
+        for value in options.cencol:
+            prefix, color = value.split(':')
+            options.centercolors[prefix] = colorstring_to_value(color)
+    if options.acol:
+        for value in options.acol:
+            prefix, color = value.split(':')
+            options.areacolors[prefix] = colorstring_to_value(color)
 
     c = Canvas(options.width, options.heigth, args[0])
     ctx = c.ctx()
 
     ctx.init_geoscale(*find_dimensions(geoitems, pygeodb.borderdata.deutschgrenzen))
-
+    ctx.set_line_width(0.1*c.ctxscale)
     borderskip = 10 # Borders are too detailed, only use 10% of data
     if not options.noclip:
         set_clipping(ctx, pygeodb.borderdata.deutschgrenzen, borderskip)
-    if options.borders or options.areas:
-        ctx.set_line_width(0.1*c.ctxscale)
+    if options.borders or options.areas or options.acol:
         draw_voronoi(ctx, geoitems, options)
     
-    ctx.set_line_width((options.center/100.0)*c.ctxscale)
     ctx.set_source_rgba(0, 0, 0, 1)
     if options.frontier:
         draw_frontier(ctx, pygeodb.borderdata.deutschgrenzen, borderskip)
     if options.center:
-        draw_centers(ctx, geoitems, options.limit)
+        ctx.set_line_width((options.center/100.0)*c.ctxscale)
+        draw_centers(ctx, geoitems, options)
 
     c.save()
 

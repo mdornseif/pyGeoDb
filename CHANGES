@@ -1,3 +1,4 @@
 1.1  plz_draw got --limit parameter
      renamed --voronoi to --borders
      --areas can now be used to fill areas.
+     Commandline Parameters for coloring areas or centers

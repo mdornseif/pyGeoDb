@@ -86,7 +86,9 @@ Pycairo_ zum Einsatz, die natuerlich vorher installiert sein muss. Karten
 koennen im PDF_, PNG_, EPS_ und SVG_ Format erstellt werden.
 
 .. image:: http://static.23.nu/md/Pictures/beispiel_leitbereiche.png
-
+.. image:: http://static.23.nu/md/Pictures/plz_einfaerben.png
+.. image:: http://static.23.nu/md/Pictures/plz_flaechen.png
+.. image:: http://static.23.nu/md/Pictures/plz_deutschland_gebiete.png
 
 Es gibt keine freie Datenquelle zu Groesse und Form der einzelnen
 Postleitzahlenbereiche. Jedoch kann man sich der Form der
@@ -108,6 +110,19 @@ die entsprechenden kommandos finden sich in der Datei Makefile, unten.
 .. _`Voronoi-Diagramm`: http://de.wikipedia.org/wiki/Voronoi-Diagramm
 .. _voronoiexample1: http://www.raymondhill.net/voronoi/voronoi.php
 .. _voronoiexample2: http://www.diku.dk/hjemmesider/studerende/duff/Fortune/
+
+Eine Deutsche Postleitzahlenkarte erstellt man beispielsweise mit dem
+Kommando::
+
+    $ python ./plz_draw --borders --frontier \
+    --acol=4:#f00 --acol=3:#0f0 --acol=2:#00f \
+    --acol=1:#ff0 --acol=0:#f0f --acol=5:#0ff \
+    --acol=6:#07f --acol=7:#f70 --acol=8:#7f7 \
+    --acol=9:#70f test.pdf 
+    
+    $ python ./plz_draw --frontier --borders \
+    --acol=42859:#f00 --acol=428:#0f0 --acol=42:#00f \
+    test.pdf 
 
 
 Autoren
