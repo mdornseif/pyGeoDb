@@ -1,9 +1,10 @@
-PyGeoDb - an Interfact op OpenGeoDb
+PyGeoDb - an Interface to OpenGeoDb
 ===================================
 
-PyGeoDb is an Python Interface to OpenGeoDb_. It is all about Austrian, German
-and Swiss Postcodes and City location. It requires Python 2.6.
-The rest of this documentation is in german Language.
+PyGeoDb is an Python interface to OpenGeoDb_. It is all about Austrian, German
+and Swiss postcodes (ZIPs) and city locations. It requires Python 2.6.
+The rest of this documentation is in German language. Probably you can extend
+the system to US data by integrating US data as used in Ben Fry's zipdecode_.
 
 Die ist ein Python Interface zu OpenGeoDb. "Im Mittelpunkt des Projektes
 OpenGeoDB steht der Aufbau einer moeglichst vollstaendigen Datenbank mit
@@ -18,6 +19,7 @@ werden neben den OpenGeoDb Daten auch Informationen aus Openstreetmap
 herangezogen.
 
 .. _OpenGeoDb: http://opengeodb.giswiki.org/
+.. _zipdecode: http://benfry.com/zipdecode/
 .. _Umkreissuche: http://de.wikipedia.org/wiki/Umkreissuche
 .. _GeoClassPHP: http://sourceforge.net/projects/geoclassphp/
 
@@ -34,7 +36,7 @@ berechnen. Dazu kann direkt eine Postleitzahl als String, ein dict, oder ein
 Objekt, dass dem AddressProtocol_ entspricht, uebergeben werden::
 
     >>> import pygeodb
-    >>> pygeodb.distance("42897", "50933") # Strings
+    >>> pygeodb.distance("42897", "50933") # strings
     38131
 
     >>> pygeodb.distance({'plz': "42897"}, {'plz': "48143"}) # dicts
@@ -81,14 +83,17 @@ ausgeloesst::
 Kartengeneriertung
 ------------------
 
+.. _hyperlink-name: karten
+
 pyGeoDb kann Postleitzhalenkarten generieren. Dazu kommt die Graphikbibliothek
 Pycairo_ zum Einsatz, die natuerlich vorher installiert sein muss. Karten
-koennen im PDF_, PNG_, EPS_ und SVG_ Format erstellt werden.
+koennen im PDF_, PNG_, EPS und SVG Format erstellt werden.
 
 .. image:: http://static.23.nu/md/Pictures/beispiel_leitbereiche.png
 .. image:: http://static.23.nu/md/Pictures/plz_einfaerben.png
 .. image:: http://static.23.nu/md/Pictures/plz_flaechen.png
 .. image:: http://static.23.nu/md/Pictures/plz_deutschland_gebiete.png
+.. image:: http://static.23.nu/md/Pictures/ZZ625F1174.png
 
 Es gibt keine freie Datenquelle zu Groesse und Form der einzelnen
 Postleitzahlenbereiche. Jedoch kann man sich der Form der
@@ -105,24 +110,64 @@ die entsprechenden kommandos finden sich in der Datei Makefile, unten.
 .. _Pycairo: http://cairographics.org/pycairo/ 
 .. _PDF: https://github.com/mdornseif/pyGeoDb/raw/master/maps/deutschland_gebiete.pdf
 .. _PNG: https://github.com/mdornseif/pyGeoDb/raw/master/maps/deutschland_gebiete.png
-.. _EPS: https://github.com/mdornseif/pyGeoDb/raw/master/maps/deutschland_gebiete.svgz
-.. _SVG: https://github.com/mdornseif/pyGeoDb/raw/master/maps/deutschland_gebiete.eps.gz
 .. _`Voronoi-Diagramm`: http://de.wikipedia.org/wiki/Voronoi-Diagramm
 .. _voronoiexample1: http://www.raymondhill.net/voronoi/voronoi.php
 .. _voronoiexample2: http://www.diku.dk/hjemmesider/studerende/duff/Fortune/
 
-Eine Deutsche Postleitzahlenkarte erstellt man beispielsweise mit dem
-Kommando::
+Eine deutsche Postleitzahlenkarte erstellt man beispielsweise mit folgenden
+Kommandos::
 
-    $ python ./plz_draw --borders --frontier \
-    --acol=4:#f00 --acol=3:#0f0 --acol=2:#00f \
-    --acol=1:#ff0 --acol=0:#f0f --acol=5:#0ff \
-    --acol=6:#07f --acol=7:#f70 --acol=8:#7f7 \
-    --acol=9:#70f test.pdf 
+    # Deutschlandkarte mit Postleitzahlenbereichen
+    $ python ./plz_draw --borders --acol=4:#f00 --acol=3:#0f0 --acol=2:#00f \
+    --acol=1:#ff0 --acol=0:#f0f --acol=5:#0ff --acol=6:#07f --acol=7:#f70 \
+    --acol=8:#7f7 --acol=9:#70f test.pdf
     
-    $ python ./plz_draw --frontier --borders \
-    --acol=42859:#f00 --acol=428:#0f0 --acol=42:#00f \
-    test.pdf 
+    # 42859 und darüberliegende Bereiche markieren
+    $ python ./plz_draw --borders --acol=42859:#f00 --acol=428:#0f0 \
+    --acol=42:#00f test.pdf
+
+Mann kann auf der Karte auch ortsnamen anzeigen lassen. Wenn ein Ort mehrere
+Postleitzahlen hat, wird der Ortsname am gemittelten Zentrum der verschiedenen
+Postleitzahlenbereichen gezeichnet. Eine Karte mit dem meissten deuteschen
+Großstädten erhält man mit folgendem Kommando::
+
+    python ./plz_draw -mBerlin -mHamburg '-mFrankfurt am Main' -mStuttgart
+    -mDortmund -mBremen -mHannover -mLeipzig -mDresden -mBielefeld -mMannheim
+    -mKarlsruhe -mAugsburg -mAachen -mChemnitz -mKiel '-mHalle' -mMagdeburg
+    '-mFreiburg im Breisgau' -mErfurt -mRostock -mKassel -mPaderborn
+    -mRegensburg -mWolfsburg -mBremerhaven -mIngolstadt -mUlm -mKoblenz
+    -mTrier -mSiegen -mJena -mCottbus -mDüsseldorf -mMünchen -mKöln -mNürnberg
+    -mLübeck -mSaarbrücken -mWürzburg -mGöttingen test.pdf
+
+Die Eigabe der Städtenamen mit Umlauten ist je nach Konfiguration des
+Betriebssystems problematisch.
+
+
+Paramerisierte Kartenfärbung
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Das Programm kann auch Postleitzahlenbereiche je nach Häufigkeit des Aufkommens von Postleitzahlen in einer Datei einfärben. Das ist z.B. Karten, die die Kundenverteilung ider dergleichen visualisieren, geeignet.
+
+Erzeugen Sie datzu eineTatei mit Test-Postleitzahlen. Schreiben Sie z.B folgendes in eine Datei test.txt::
+
+    42477
+    42477
+    42477
+    42477
+    42897
+    42897
+    42897
+    42499
+    42859
+    42899
+    42929
+
+Nun kann man diese Daten nutzen, um eine Entsprechend eingefärbte KArte zu erstellen::
+
+    # eingefärbte Gebiete
+    python ./plz_draw --read=test.txt --areas test.pdf
+
+42477 wird am dunkelsten eingefärbt (kommt 4 x vor), 42897 dunkel (kommt 3 x vor) die restlichen Felder werden nur leicht eingefärbt.
 
 
 Autoren
@@ -134,15 +179,15 @@ der von Shane O'Sullivan in C++ und dann von Bill Simons in Python konvertiert
 wurde.
 
 Die Datengrundlage fuer die Polstleitzahlenbereiche stammt vom `OpenGeoDb
-Projekt`_. Die Deutschen grenzen stammen aus `Openstreetmap Project Germany`_.
+Projekt`_. Die deutschen Grenzen stammen aus `Openstreetmap Project Germany`_.
 
 Die Kartengenerierung stammt von Maximillian Dornseif und basiert auf seinem
-Projekt `zipdecode.de`, dass auf Code aus Ben Frys Buch `Visualizing Data`_
+Projekt `zipdecodede`, dass auf Code aus Ben Frys Buch `Visualizing Data`_
 beruht.
 
 .. _`OpenGeoDb Projekt`: http://www.opengeodb.de
 .. _`Openstreetmap Project Germany`: http://wiki.openstreetmap.org/wiki/WikiProject_Germany/Grenzen#Deutschland
-.. _`zipdecode.de`: http://md.hudora.de/c0de/zipdecodeDE/
+.. _`zipdecodede`: http://md.hudora.de/c0de/zipdecodeDE/
 .. _`Visualizing Data`: http://www.librarything.com/work/4108432/book/37543244
 
 
@@ -150,7 +195,8 @@ Alternativen, Quellen & Vermischtes
 -----------------------------------
 
 `d9t.gis`_ ist ein sehr Zope-Lastiges Python Projekt zur Entfernugnsberechnung
-mit OpenGeoDb Daten.
+mit OpenGeoDb Daten. `ruby-opengeodb`_ erlaubt Zugriff auf die OpenGeoDB Daten
+aus Ruby heraus.
 
 Es gibt jede Menge Online-Distanzberechnungsdienste, z.B:
 
@@ -163,6 +209,14 @@ Umfangreiche Informationen zum deutschen Postleitzahlensystem inklusive freier
 Rasterkarten gibt es bei Wikipedia_.
 
 .. _`d9t.gis`: http://pypi.python.org/pypi/d9t.gis
+.. _`ruby-opengeodb`: http://ruby-opengeodb.rubyforge.org/
 .. _Wikipedia: http://de.wikipedia.org/wiki/Postleitzahl_(Deutschland)
+
+Als Alternative Quelle für die Deutschen Grenzen käme anstatt von
+OpenStreetmap auch NaturalEarth_ in Frage. Geonames_ könnte als Alternative
+Quelle für Postleitzahlen dienen.
+
+.. _NaturalEarth: http://www.naturalearthdata.com/
+.. _Geonames: http://www.geonames.org/postal-codes/
 
 Wenn Sie einen Fehler bemerken, melden Sie Ihn bitte unter http://github.com/mdornseif/pyGeoDb/issues

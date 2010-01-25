@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-u"""plz_draw - draws maps of germany displaying postal codes
-
-"""
+u"""plz_draw - draws maps of germany displaying postal codes"""
 
 # Created by Maximillian Dornseif on 2010-01-17.
 # Copyright (c) 2010 HUDORA. All rights reserved.
@@ -13,12 +11,12 @@ from __future__ import absolute_import
 from future_builtins import map, filter, ascii, hex, oct
 
 from optparse import OptionParser
-import random, math, sys
-from optparse import OptionParser
 import cairo
+import math
 import pygeodb
-from pprint import pprint
-import random
+import re
+import sys
+
 
 debug = False
 
@@ -32,6 +30,7 @@ def colorstring_to_value(colstr):
 
 class NiceCtx(cairo.Context):
     defaultBorderColour = (0x7d/255.0, 0x7d/255.0, 0x7d/255.0)
+
     def stroke_border(self, border):
         src = self.get_source()
         width = self.get_line_width()
@@ -55,6 +54,7 @@ class NiceCtx(cairo.Context):
 
 
 class Canvas:
+
     def __init__(self, width, height, filename):
         self.width, self.height = width, height
         self.needs_save = False
@@ -165,7 +165,7 @@ def get_centercolor(plz, options):
 
 def draw_centers(ctx, geoitems, options):
     """draw centers of PLZ areas"""
-    
+
     ctx.set_source_rgb(*colorstring_to_value(options.centerdefaultcolor))
     for plz, (long, lat, name) in sorted(geoitems):
         if should_draw(plz, options.limit):
@@ -213,7 +213,7 @@ def draw_voronoi(ctx, geoitems, options):
             s.plz = plz
             pts.append(s)
     points, lines, edges = pygeodb.voronoi.computeVoronoiDiagram(pts)
-    
+
     plzlines = {}
     for (l, p1, p2) in edges:
         x1 = y1 = x2 = y2 = None
@@ -236,16 +236,16 @@ def draw_voronoi(ctx, geoitems, options):
                 # save for polygon use
                 plzlines.setdefault(plz1, []).append(((x1, y1), (x2, y2)))
                 plzlines.setdefault(plz2, []).append(((x1, y1), (x2, y2)))
-            
+
             if options.borders:
                 # actual drawing
                 ctx.move_to(*ctx.geoscale(x1, y1))
                 ctx.line_to(*ctx.geoscale(x2, y2))
                 ctx.stroke()
-    
+
     if not options.areas and not options.areacolors:
         return # we are finished
-    
+
     # calculate per PLZ polygons
     for plz, lines in plzlines.items():
         polygon = list(lines.pop())
@@ -269,14 +269,15 @@ def draw_voronoi(ctx, geoitems, options):
                 if b == needle:
                     polygon.insert(0, a)
                     del(lines[lines.index((a, b))])
-            
+
             if lenpolygon == len(polygon):
                 # no progress
                 break
             lenpolygon = len(polygon)
-        
+
         # draw the beast
-        ctx.set_source_rgba(0.5, 0.5, 0.5)
+        # TODO: default
+        ctx.set_source_rgba(0.95, 0.95, 0.95)
         if len(polygon) > 2:
             areacolor = get_areacolor(plz, options)
             if areacolor:
@@ -295,6 +296,32 @@ def draw_voronoi(ctx, geoitems, options):
                 ctx.fill()
 
 
+def draw_citymarker(ctx, name, long, lat, ctxscale):
+    """Draw a Black-White-Red circle and the city name"""
+    # draw text
+    ctx.set_source_rgb(0, 0, 0)
+    xbearing, ybearing, width, height, xadvance, yadvance = ctx.text_extents(name)
+    x, y = ctx.geoscale(long, lat)
+    ctx.move_to(x-width/2, y+(ybearing*0.8))
+    ctx.show_text(name)
+    # draw dot
+    ctx.set_source_rgb(0.0, 0.0, 0.0)
+    ctx.set_line_width(6 * ctxscale)
+    ctx.move_to(*ctx.geoscale(long, lat))
+    ctx.close_path()
+    ctx.stroke()
+    ctx.set_source_rgb(1.0, 1.0, 1.0)
+    ctx.set_line_width(5 * ctxscale)
+    ctx.move_to(*ctx.geoscale(long, lat))
+    ctx.close_path()
+    ctx.stroke()
+    ctx.set_source_rgb(1.0, 0.0, 0.0)
+    ctx.set_line_width(4 * ctxscale)
+    ctx.move_to(*ctx.geoscale(long, lat))
+    ctx.close_path()
+    ctx.stroke()
+
+
 def parse_commandline():
     """Parse the commandline and return information."""
 
@@ -308,10 +335,12 @@ def parse_commandline():
                       help='Heigth of generated Image [%default]')
     parser.add_option('-l', '--limit', action='append',
                       help='Limit PLZ matiching to this prefifx, can be given more than once.')
-    parser.add_option('-f', '--frontier', action='store_true',
-                      help='Draw german Frontier')
+    parser.add_option('--nofrontier', action='store_true',
+                      help="Don't draw german Frontier")
     parser.add_option('-b', '--borders', action='store_true',
                       help='Draw german Frontier')
+    parser.add_option('-m', '--mark', action='append',
+                      help='Draw City names of this PLZ.')
     parser.add_option('-c', '--center', type='int', default=50,
                       help='Draw centers of postcode areas, 0 to disable [%default]')
     parser.add_option('--centerdefaultcolor', type='string', default='#000',
@@ -322,8 +351,12 @@ def parse_commandline():
                       help='Fill postal areas')
     parser.add_option('--acol', action='append',
                       help='set color for one or many PLZ areas, e.g. --acol=423:#f00')
+    parser.add_option('-r', '--read', type='string',
+                      help="read list of PLZ to highlight from file")
+    parser.add_option('--digits', type='int', default=5,
+                      help='Significant digits per PLZ [%default]')
     parser.add_option('--noclip', action='store_true',
-                      help="Don't clip arround the Border")
+                      help="Don't clip around the Border")
     parser.add_option('-d', '--debug', action='store_true', dest='debug',
                       help='Enables debugging mode')
 
@@ -335,8 +368,8 @@ def parse_commandline():
 
 def main(options, args):
     """This implements the actual program functionality"""
-    global debug
-    
+    global debug, values, stepsize
+
     import pygeodb
     import pygeodb.borderdata
     geoitems = pygeodb.geodata['DE'].items()
@@ -354,6 +387,21 @@ def main(options, args):
             prefix, color = value.split(':')
             options.areacolors[prefix] = colorstring_to_value(color)
 
+    values = {}
+    maxvalue = 0
+    if options.read:
+        fd = open(options.read, 'r')
+        for line in (x.strip() for x in fd):
+            plz = re.sub('[^0-9]+', '', line)
+            if plz.startswith('#'):
+                continue
+            values[plz[:options.digits]] = values.get(plz[:options.digits], 0) + 1
+            maxvalue = max([maxvalue, values[plz[:options.digits]]])
+        stepsize = 1.0/maxvalue
+        for plzprefix, value in values.items():
+            # options.centercolors[plzprefix] = (1-(value*stepsize*0.8), 1-(value*stepsize*0.8), 1)
+            options.areacolors[plzprefix] = (1-(value*stepsize*0.8), 1-(value*stepsize*0.8), 1)
+
     c = Canvas(options.width, options.heigth, args[0])
     ctx = c.ctx()
 
@@ -364,15 +412,32 @@ def main(options, args):
         set_clipping(ctx, pygeodb.borderdata.deutschgrenzen, borderskip)
     if options.borders or options.areas or options.acol:
         draw_voronoi(ctx, geoitems, options)
-    
+
     ctx.set_source_rgba(0, 0, 0, 1)
-    if options.frontier:
+    if not options.nofrontier:
         draw_frontier(ctx, pygeodb.borderdata.deutschgrenzen, borderskip)
     if options.center:
         ctx.set_line_width((options.center/100.0)*c.ctxscale)
         draw_centers(ctx, geoitems, options)
 
+    if options.mark:
+        ctx.set_font_size(0.025)
+        for markname in options.mark:
+            # find all locations with that city name
+            markname = markname.decode('utf-8')
+            locationsx = []
+            locationsy = []
+            for plz, (long, lat, name) in geoitems:
+                if name == markname:
+                    locationsx.append(long)
+                    locationsy.append(lat)
+            if not locationsx:
+                sys.stderr.write("%r not found\n" % markname)
+            else:
+                # average
+                draw_citymarker(ctx, markname, sum(locationsx)/len(locationsx), sum(locationsy)/len(locationsy), c.ctxscale)
     c.save()
+
 
 if __name__ == '__main__':
     main(*parse_commandline())
