@@ -126,17 +126,17 @@ Kommandos::
     $ python ./plz_draw --borders --acol=42859:#f00 --acol=428:#0f0 \
     --acol=42:#00f test.pdf
 
-Mann kann auf der Karte auch ortsnamen anzeigen lassen. Wenn ein Ort mehrere
+Man kann auf der Karte Ortsnamen anzeigen lassen. Wenn ein Ort mehrere
 Postleitzahlen hat, wird der Ortsname am gemittelten Zentrum der verschiedenen
-Postleitzahlenbereichen gezeichnet. Eine Karte mit dem meissten deutschen
-Großstaedten erhaelt man mit folgendem Kommando::
+Postleitzahlenbereiche gezeichnet. Eine Karte mit dem meissten deutschen
+Grossstaedten erhaelt man mit folgendem Kommando::
 
-    python ./plz_draw -mBerlin -mHamburg '-mFrankfurt am Main' -mStuttgart
-    -mDortmund -mBremen -mHannover -mLeipzig -mDresden -mBielefeld -mMannheim
-    -mKarlsruhe -mAugsburg -mAachen -mChemnitz -mKiel '-mHalle' -mMagdeburg
-    '-mFreiburg im Breisgau' -mErfurt -mRostock -mKassel -mPaderborn
-    -mRegensburg -mWolfsburg -mBremerhaven -mIngolstadt -mUlm -mKoblenz
-    -mTrier -mSiegen -mJena -mCottbus test.pdf
+    python ./plz_draw -mBerlin -mHamburg -mStuttgart -mDortmund -mBremen
+    -mHannover -mLeipzig -mDresden -mBielefeld -mMannheim -mKarlsruhe
+    -mAugsburg -mAachen -mChemnitz -mKiel -mHalle -mMagdeburg -mErfurt
+    -mRostock -mKassel -mPaderborn -mRegensburg -mWolfsburg -mBremerhaven
+    -mIngolstadt -mUlm -mKoblenz -mTrier -mSiegen -mJena -mCottbus '-mFreiburg
+    im Breisgau' '-mFrankfurt am Main' test.pdf
 
 Die Eigabe der Staedtenamen mit Umlauten ist je nach Konfiguration des
 Betriebssystems problematisch. Auch lassen sich diese in dieser Hilfedatei nicht problemlos darstellen. Sie koennen die Parameter "-mDuesseldorf -mMuenchen -mKoeln -mNuernberg -mLuebeck -mSaarbruecken -mWuerzburg -mGoettingen" wenn Sie jeweils die korrekten Umlaute einsetzen.
