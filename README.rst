@@ -122,31 +122,30 @@ Kommandos::
     --acol=1:#ff0 --acol=0:#f0f --acol=5:#0ff --acol=6:#07f --acol=7:#f70 \
     --acol=8:#7f7 --acol=9:#70f test.pdf
     
-    # 42859 und darüberliegende Bereiche markieren
+    # 42859 und darueberliegende Bereiche markieren
     $ python ./plz_draw --borders --acol=42859:#f00 --acol=428:#0f0 \
     --acol=42:#00f test.pdf
 
 Mann kann auf der Karte auch ortsnamen anzeigen lassen. Wenn ein Ort mehrere
 Postleitzahlen hat, wird der Ortsname am gemittelten Zentrum der verschiedenen
-Postleitzahlenbereichen gezeichnet. Eine Karte mit dem meissten deuteschen
-Großstädten erhält man mit folgendem Kommando::
+Postleitzahlenbereichen gezeichnet. Eine Karte mit dem meissten deutschen
+Großstaedten erhaelt man mit folgendem Kommando::
 
     python ./plz_draw -mBerlin -mHamburg '-mFrankfurt am Main' -mStuttgart
     -mDortmund -mBremen -mHannover -mLeipzig -mDresden -mBielefeld -mMannheim
     -mKarlsruhe -mAugsburg -mAachen -mChemnitz -mKiel '-mHalle' -mMagdeburg
     '-mFreiburg im Breisgau' -mErfurt -mRostock -mKassel -mPaderborn
     -mRegensburg -mWolfsburg -mBremerhaven -mIngolstadt -mUlm -mKoblenz
-    -mTrier -mSiegen -mJena -mCottbus -mDüsseldorf -mMünchen -mKöln -mNürnberg
-    -mLübeck -mSaarbrücken -mWürzburg -mGöttingen test.pdf
+    -mTrier -mSiegen -mJena -mCottbus test.pdf
 
-Die Eigabe der Städtenamen mit Umlauten ist je nach Konfiguration des
-Betriebssystems problematisch.
+Die Eigabe der Staedtenamen mit Umlauten ist je nach Konfiguration des
+Betriebssystems problematisch. Auch lassen sich diese in dieser Hilfedatei nicht problemlos darstellen. Sie koennen die Parameter "-mDuesseldorf -mMuenchen -mKoeln -mNuernberg -mLuebeck -mSaarbruecken -mWuerzburg -mGoettingen" wenn Sie jeweils die korrekten Umlaute einsetzen.
 
 
-Paramerisierte Kartenfärbung
+Paramerisierte Kartenfaerbung
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Das Programm kann auch Postleitzahlenbereiche je nach Häufigkeit des Aufkommens von Postleitzahlen in einer Datei einfärben. Das ist z.B. Karten, die die Kundenverteilung ider dergleichen visualisieren, geeignet.
+Das Programm kann auch Postleitzahlenbereiche je nach Haeufigkeit des Aufkommens von Postleitzahlen in einer Datei einfaerben. Das ist z.B. Karten, die die Kundenverteilung ider dergleichen visualisieren, geeignet.
 
 Erzeugen Sie datzu eineTatei mit Test-Postleitzahlen. Schreiben Sie z.B folgendes in eine Datei test.txt::
 
@@ -162,12 +161,12 @@ Erzeugen Sie datzu eineTatei mit Test-Postleitzahlen. Schreiben Sie z.B folgende
     42899
     42929
 
-Nun kann man diese Daten nutzen, um eine Entsprechend eingefärbte KArte zu erstellen::
+Nun kann man diese Daten nutzen, um eine Entsprechend eingefaerbte Karte zu erstellen::
 
-    # eingefärbte Gebiete
+    # eingefaerbte Gebiete
     python ./plz_draw --read=test.txt --areas test.pdf
 
-42477 wird am dunkelsten eingefärbt (kommt 4 x vor), 42897 dunkel (kommt 3 x vor) die restlichen Felder werden nur leicht eingefärbt.
+42477 wird am dunkelsten eingefaerbt (kommt 4 x vor), 42897 dunkel (kommt 3 x vor) die restlichen Felder werden nur leicht eingefaerbt.
 
 
 Autoren
@@ -212,9 +211,9 @@ Rasterkarten gibt es bei Wikipedia_.
 .. _`ruby-opengeodb`: http://ruby-opengeodb.rubyforge.org/
 .. _Wikipedia: http://de.wikipedia.org/wiki/Postleitzahl_(Deutschland)
 
-Als Alternative Quelle für die Deutschen Grenzen käme anstatt von
-OpenStreetmap auch NaturalEarth_ in Frage. Geonames_ könnte als Alternative
-Quelle für Postleitzahlen dienen.
+Als Alternative Quelle fuer die Deutschen Grenzen kaeme anstatt von
+OpenStreetmap auch NaturalEarth_ in Frage. Geonames_ koennte als Alternative
+Quelle fuer Postleitzahlen dienen.
 
 .. _NaturalEarth: http://www.naturalearthdata.com/
 .. _Geonames: http://www.geonames.org/postal-codes/
