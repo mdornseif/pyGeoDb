@@ -413,6 +413,7 @@ def main(options, args):
     if options.borders or options.areas or options.acol:
         draw_voronoi(ctx, geoitems, options)
 
+    ctx.set_line_width(0.5*c.ctxscale)
     ctx.set_source_rgba(0, 0, 0, 1)
     if not options.nofrontier:
         draw_frontier(ctx, pygeodb.borderdata.deutschgrenzen, borderskip)
@@ -421,6 +422,7 @@ def main(options, args):
         draw_centers(ctx, geoitems, options)
 
     if options.mark:
+        ctx.reset_clip()
         ctx.set_font_size(0.025)
         for markname in options.mark:
             # find all locations with that city name

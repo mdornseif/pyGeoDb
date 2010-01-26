@@ -89,6 +89,7 @@ pyGeoDb kann Postleitzhalenkarten generieren. Dazu kommt die Graphikbibliothek
 Pycairo_ zum Einsatz, die natuerlich vorher installiert sein muss. Karten
 koennen im PDF_, PNG_, EPS und SVG Format erstellt werden.
 
+.. image:: http://static.23.nu/md/Pictures/deutschland_stadte.png
 .. image:: http://static.23.nu/md/Pictures/beispiel_leitbereiche.png
 .. image:: http://static.23.nu/md/Pictures/plz_einfaerben.png
 .. image:: http://static.23.nu/md/Pictures/plz_flaechen.png
@@ -103,7 +104,7 @@ reicht aber fuer Visualisierungsaufgaben aus. Zur Erzeugung des Graphen, der
 die Postleitzahlenbereiche unterteilt, wird der "Fortune Algorithmus"
 werwendet.
 
-Rufen Sie `./plz_draw --help` auf, um die Aufrufparameter angezeigt zu
+Rufen Sie ``./plz_draw --help`` auf, um die Aufrufparameter angezeigt zu
 bekommen. Beispieldateien kann man durch das Kommando `make maps` erstellen -
 die entsprechenden kommandos finden sich in der Datei Makefile, unten.
 
@@ -133,21 +134,27 @@ Grossstaedten erhaelt man mit folgendem Kommando::
 
     python ./plz_draw -mBerlin -mHamburg -mStuttgart -mDortmund -mBremen
     -mHannover -mLeipzig -mDresden -mBielefeld -mMannheim -mKarlsruhe
-    -mAugsburg -mAachen -mChemnitz -mKiel -mHalle -mMagdeburg -mErfurt
-    -mRostock -mKassel -mPaderborn -mRegensburg -mWolfsburg -mBremerhaven
-    -mIngolstadt -mUlm -mKoblenz -mTrier -mSiegen -mJena -mCottbus '-mFreiburg
-    im Breisgau' '-mFrankfurt am Main' test.pdf
+    -mAugsburg -mChemnitz -mKiel -mHalle -mMagdeburg -mErfurt -mRostock
+    -mKassel -mPaderborn -mRegensburg -mWolfsburg -mBremerhaven -mIngolstadt
+    -mUlm -mKoblenz -mTrier -mSiegen -mJena -mCottbus '-mFreiburg im Breisgau'
+    '-mFrankfurt am Main' test.pdf
 
 Die Eigabe der Staedtenamen mit Umlauten ist je nach Konfiguration des
-Betriebssystems problematisch. Auch lassen sich diese in dieser Hilfedatei nicht problemlos darstellen. Sie koennen die Parameter "-mDuesseldorf -mMuenchen -mKoeln -mNuernberg -mLuebeck -mSaarbruecken -mWuerzburg -mGoettingen" wenn Sie jeweils die korrekten Umlaute einsetzen.
+Betriebssystems problematisch. Auch lassen sich diese in dieser Hilfedatei
+nicht problemlos darstellen. Sie koennen die Parameter ``-mDuesseldorf
+-mMuenchen -mKoeln -mNuernberg -mLuebeck -mSaarbruecken -mWuerzburg
+-mGoettingen`` wenn Sie jeweils die korrekten Umlaute einsetzen.
 
 
 Paramerisierte Kartenfaerbung
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Das Programm kann auch Postleitzahlenbereiche je nach Haeufigkeit des Aufkommens von Postleitzahlen in einer Datei einfaerben. Das ist z.B. Karten, die die Kundenverteilung ider dergleichen visualisieren, geeignet.
+Das Programm kann auch Postleitzahlenbereiche je nach Haeufigkeit des
+Aufkommens von Postleitzahlen in einer Datei einfaerben. Das ist z.B. Karten,
+die die Kundenverteilung ider dergleichen visualisieren, geeignet.
 
-Erzeugen Sie datzu eineTatei mit Test-Postleitzahlen. Schreiben Sie z.B folgendes in eine Datei test.txt::
+Erzeugen Sie datzu eineTatei mit Test-Postleitzahlen. Schreiben Sie z.B
+folgendes in eine Datei test.txt::
 
     42477
     42477
@@ -161,12 +168,31 @@ Erzeugen Sie datzu eineTatei mit Test-Postleitzahlen. Schreiben Sie z.B folgende
     42899
     42929
 
-Nun kann man diese Daten nutzen, um eine Entsprechend eingefaerbte Karte zu erstellen::
+Nun kann man diese Daten nutzen, um eine Entsprechend eingefaerbte Karte zu
+erstellen::
 
     # eingefaerbte Gebiete
     python ./plz_draw --read=test.txt --areas test.pdf
 
-42477 wird am dunkelsten eingefaerbt (kommt 4 x vor), 42897 dunkel (kommt 3 x vor) die restlichen Felder werden nur leicht eingefaerbt.
+42477 wird am dunkelsten eingefaerbt (kommt 4 x vor), 42897 dunkel (kommt 3 x
+vor) die restlichen Felder werden nur leicht eingefaerbt. Fuur Tests sind
+Beispieldaten in data/beispielverteilung.txt beigelegt.
+
+Solange Sie nicht sehr grosse Datenbestände, von mehr als einer halben Million
+Datensätze haben, werden die Eingefärbten Karten recht unregelmässig aussehen.
+Dem kann man enggegenwirken, indem man die Daten von Postleitzahlenbereichen
+mit gleichem Prefix zusammenfasst, um ein gleichmässigeres ERgebnis zu
+erzielen. Dies geht mit dem Parameter ``--digits``. Wenn Sie ``--digits=3``
+übergeben, werden nur die ersten drei Ziffern der Postleitzahl zur
+Zusammenfassung verwendet. Geben sie ``make maps`` ein, und schauen Sie die
+fünf Dateien ``maps/beispiel?.pdf`` an, um die Auswirkung des
+``--digits``-Parameters zu sehen.
+
+.. image:: http://static.23.nu/md/Pictures/beispiel5.png
+.. image:: http://static.23.nu/md/Pictures/beispiel4.png
+.. image:: http://static.23.nu/md/Pictures/beispiel3.png
+.. image:: http://static.23.nu/md/Pictures/beispiel2.png
+.. image:: http://static.23.nu/md/Pictures/beispiel1.png
 
 
 Autoren
