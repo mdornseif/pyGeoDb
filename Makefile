@@ -36,4 +36,7 @@ maps: data
 clean:
 	rm pygeodb/borderdata.py pygeodb/plzdata.py maps/*
 
+upload:
+	python setup.py sdist upload
+
 .PHONY: maps data

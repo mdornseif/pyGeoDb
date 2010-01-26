@@ -175,18 +175,18 @@ erstellen::
     python ./plz_draw --read=test.txt --areas test.pdf
 
 42477 wird am dunkelsten eingefaerbt (kommt 4 x vor), 42897 dunkel (kommt 3 x
-vor) die restlichen Felder werden nur leicht eingefaerbt. Fuur Tests sind
+vor) die restlichen Felder werden nur leicht eingefaerbt. Fuer Tests sind
 Beispieldaten in data/beispielverteilung.txt beigelegt.
 
-Solange Sie nicht sehr grosse Datenbestände, von mehr als einer halben Million
-Datensätze haben, werden die Eingefärbten Karten recht unregelmässig aussehen.
-Dem kann man enggegenwirken, indem man die Daten von Postleitzahlenbereichen
-mit gleichem Prefix zusammenfasst, um ein gleichmässigeres ERgebnis zu
-erzielen. Dies geht mit dem Parameter ``--digits``. Wenn Sie ``--digits=3``
-übergeben, werden nur die ersten drei Ziffern der Postleitzahl zur
-Zusammenfassung verwendet. Geben sie ``make maps`` ein, und schauen Sie die
-fünf Dateien ``maps/beispiel?.pdf`` an, um die Auswirkung des
-``--digits``-Parameters zu sehen.
+Solange Sie nicht sehr grosse Datenbestaende, von mehr als einer halben
+Million Datensaetze haben, werden die Eingefaerbten Karten recht
+unregelmaessig aussehen. Dem kann man entgegenwirken, indem man die Daten von
+Postleitzahlenbereichen mit gleichem Prefix zusammenfasst, um ein
+gleichmaessigeres Ergebnis zu erzielen. Dies geht mit dem Parameter
+``--digits``. Wenn Sie ``--digits=3`` uebergeben, werden nur die ersten drei
+Ziffern der Postleitzahl zur Zusammenfassung verwendet. Geben sie ``make
+maps`` ein, und schauen Sie die fuenf Dateien ``maps/beispiel?.pdf`` an, um
+die Auswirkung des ``--digits``-Parameters zu sehen.
 
 .. image:: http://static.23.nu/md/Pictures/beispiel5.png
 .. image:: http://static.23.nu/md/Pictures/beispiel4.png
