@@ -2,6 +2,7 @@
      added --mark for parking cities
      added --read for input of large amounts of data to color accordingly
      added --digits to aggregate input for several PLZ
+     don't clip city names at the border, more examples
 1.1  plz_draw got --limit parameter
      renamed --voronoi to --borders
      --areas can now be used to fill areas.
