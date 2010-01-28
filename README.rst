@@ -6,6 +6,8 @@ and Swiss postcodes (ZIPs) and city locations. It requires Python 2.6.
 The rest of this documentation is in German language. Probably you can extend
 the system to US data by integrating US data as used in Ben Fry's zipdecode_.
 
+You can download the latest release at http://pypi.python.org/pypi/pyGeoDb/#, development releases are available at http://github.com/mdornseif/pyGeoDb#.
+
 Die ist ein Python Interface zu OpenGeoDb. "Im Mittelpunkt des Projektes
 OpenGeoDB steht der Aufbau einer moeglichst vollstaendigen Datenbank mit
 Geokoordinaten zu allen Orten und Postleitzahlen (bisher: A,B,CH,D und FL)."
@@ -90,7 +92,6 @@ Pycairo_ zum Einsatz, die natuerlich vorher installiert sein muss. Karten
 koennen im PDF_, PNG_, EPS und SVG Format erstellt werden.
 
 .. image:: http://static.23.nu/md/Pictures/deutschland_stadte.png
-.. image:: http://static.23.nu/md/Pictures/beispiel_leitbereiche.png
 .. image:: http://static.23.nu/md/Pictures/plz_einfaerben.png
 .. image:: http://static.23.nu/md/Pictures/plz_flaechen.png
 .. image:: http://static.23.nu/md/Pictures/plz_deutschland_gebiete.png
