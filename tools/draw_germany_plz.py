@@ -22,12 +22,12 @@ class NiceCtx(cairo.Context):
         self.set_line_width(width - (border * 2))
         self.stroke()
         
-    def init_geoscale(self, minx, xwidth, miny, yheigth):
+    def init_geoscale(self, minx, xwidth, miny, yheight):
         self.minx = minx
         self.miny = miny
         self.xwidth = xwidth
-        self.yheigth = yheigth
-        self.geoscalefactor = 1 / max([xwidth, yheigth])
+        self.yheight = yheight
+        self.geoscalefactor = 1 / max([xwidth, yheight])
         self.geoscalefactor = self.geoscalefactor
         
     def geoscale(self, x, y):

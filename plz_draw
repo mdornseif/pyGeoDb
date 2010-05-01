@@ -40,12 +40,12 @@ class NiceCtx(cairo.Context):
         self.set_line_width(width - (border * 2))
         self.stroke()
 
-    def init_geoscale(self, minx, xwidth, miny, yheigth):
+    def init_geoscale(self, minx, xwidth, miny, yheight):
         self.minx = minx
         self.miny = miny
         self.xwidth = xwidth
-        self.yheigth = yheigth
-        self.geoscalefactor = 1 / max([xwidth, yheigth])
+        self.yheight = yheight
+        self.geoscalefactor = 1 / max([xwidth, yheight])
         self.geoscalefactor = self.geoscalefactor
 
     def geoscale(self, x, y):
@@ -331,7 +331,7 @@ def parse_commandline():
     parser.set_usage('usage: %prog [options] outputfile. Try %prog --help for details.')
     parser.add_option('--width', type='int', default=480,
                       help='Width of generated Image [%default]')
-    parser.add_option('--heigth', type='int', default=640,
+    parser.add_option('--height', type='int', default=640,
                       help='Heigth of generated Image [%default]')
     parser.add_option('-l', '--limit', action='append',
                       help='Limit PLZ matiching to this prefifx, can be given more than once.')
@@ -402,7 +402,7 @@ def main(options, args):
             # options.centercolors[plzprefix] = (1-(value*stepsize*0.8), 1-(value*stepsize*0.8), 1)
             options.areacolors[plzprefix] = (1-(value*stepsize*0.8), 1-(value*stepsize*0.8), 1)
 
-    c = Canvas(options.width, options.heigth, args[0])
+    c = Canvas(options.width, options.height, args[0])
     ctx = c.ctx()
 
     ctx.init_geoscale(*find_dimensions(geoitems, pygeodb.borderdata.deutschgrenzen))
