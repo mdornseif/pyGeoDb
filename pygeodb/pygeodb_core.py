@@ -27,7 +27,10 @@ locations = GeoLocation.select()
 distanz_liste = sort(locations, referenz)
 """
 
+from __future__ import print_function
+from __future__ import unicode_literals
 from __future__ import absolute_import
+from future_builtins import map, filter, ascii, hex, oct
 
 import math
 from pygeodb.plzdata import geodata
@@ -47,8 +50,8 @@ class PLZ:
         fLat, fLon = math.radians(self.latitude), math.radians(self.longitude)
         tLat, tLon = math.radians(other.latitude), math.radians(other.longitude)
         distance = math.acos(
-            math.sin(tLat) * math.sin(fLat) +
-            math.cos(tLat) * math.cos(fLat) * math.cos(tLon - fLon)) * 6380000
+            round(math.sin(tLat) * math.sin(fLat) +
+                  math.cos(tLat) * math.cos(fLat) * math.cos(tLon - fLon), 7)) * 6380000
         return int(distance)
 
 
