@@ -246,3 +246,9 @@ Quelle fuer Postleitzahlen dienen.
 .. _Geonames: http://www.geonames.org/postal-codes/
 
 Wenn Sie einen Fehler bemerken, melden Sie Ihn bitte unter http://github.com/mdornseif/pyGeoDb/issues
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/mdornseif/pygeodb/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
