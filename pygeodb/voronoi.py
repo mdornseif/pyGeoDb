@@ -324,11 +324,8 @@ class Site(object):
         self.y = y
         self.sitenum = sitenum
 
-    def __repr__(self):
-        return "Site #%d (%g, %g)" % (self.sitenum, self.x, self.y)
-
     def dump(self):
-        print(repr(self))
+        print("Site #%d (%g, %g)" % (self.sitenum, self.x, self.y))
 
     def __cmp__(self, other):
         if self.y < other.y:
@@ -385,7 +382,6 @@ class Edge(object):
         # get the difference in x dist between the sites
         dx = float(s2.x - s1.x)
         dy = float(s2.y - s1.y)
-
         adx = abs(dx)  # make sure that the difference in positive
         ady = abs(dy)
 
@@ -396,15 +392,11 @@ class Edge(object):
             newedge.a = 1.0
             newedge.b = dy/dx
             newedge.c /= dx
-        elif ady < adx:
+        else:
             # set formula of line, with y fixed to 1
             newedge.b = 1.0
             newedge.a = dx/dy
             newedge.c /= dy
-        else:
-            newedge.a = 0
-            newedge.b = 0
-            newedge.c = 0
 
         newedge.edgenum = Edge.EDGE_NUM
         Edge.EDGE_NUM += 1
