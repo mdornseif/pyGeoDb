@@ -227,15 +227,13 @@ def draw_voronoi(ctx, geoitems, options):
             # pointing to infinity
             x2, y2 = points[p2]
             x1 = x2 - 0.25
-            if b:
-                y1 = -1 * ((a*x1 - c) / b)
+            y1 = -1 * ((a * x1 - c) / (b + 0.0000001))
         if p2 > -1:
             x2, y2 = points[p2]
         else:
             # pointing to infinity
             x2 = x1 + 0.25
-            if b:
-                y2 = -1 * ((a*x2 - c) / b)
+            y2 = -1 * ((a * x2 - c) / (b + 0.0000001))
         if x1 and y1 and x2 and y2:
             if p1 > -1 and p2 > -1:
                 # save for polygon use if not infinity
