@@ -9,8 +9,6 @@ from __future__ import absolute_import
 
 from optparse import OptionParser
 import cairo
-import math
-import pygeodb
 import re
 import sys
 
@@ -182,6 +180,13 @@ def draw_centers(ctx, geoitems, options):
 
 class mySite(object):
     pass
+    def __init__(self, lon, lat, plz):
+        self.x = lon
+        self.y = lat
+        self.plz = plz
+
+    def __repr__(self):
+        return "<Site %s %s %s>" % (self.plz, self.lat, self.lon)
 
 
 def get_areacolor(plz, options):
@@ -202,13 +207,9 @@ def draw_voronoi(ctx, geoitems, options):
     # calculate voronoi diagram for plz areas
     import pygeodb.voronoi
     pts = []
-    for plz, (long, lat, name) in geoitems:
+    for plz, (lon, lat, name) in geoitems:
         if should_draw(plz, options.limit):
-            s = mySite() # long, lat)
-            s.x = long
-            s.y = lat
-            s.plz = plz
-            pts.append(s)
+            pts.append(mySite(lon, lat, plz))
     points, lines, edges = pygeodb.voronoi.computeVoronoiDiagram(pts)
 
     plzlines = {}
@@ -221,13 +222,15 @@ def draw_voronoi(ctx, geoitems, options):
             # pointing to infinity
             x2, y2 = points[p2]
             x1 = x2 - 0.25
-            y1 = -1 * ((a*x1 - c) / b)
+            if b:
+                y1 = -1 * ((a*x1 - c) / b)
         if p2 > -1:
             x2, y2 = points[p2]
         else:
             # pointing to infinity
             x2 = x1 + 0.25
-            y2 = -1 * ((a*x2 - c) / b)
+            if b:
+                y2 = -1 * ((a*x2 - c) / b)
         if x1 and y1 and x2 and y2:
             if p1 > -1 and p2 > -1:
                 # save for polygon use

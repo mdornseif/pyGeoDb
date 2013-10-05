@@ -324,8 +324,11 @@ class Site(object):
         self.y = y
         self.sitenum = sitenum
 
+    def __repr__(self):
+        return "Site #%d (%g, %g)" % (self.sitenum, self.x, self.y)
+
     def dump(self):
-        print("Site #%d (%g, %g)" % (self.sitenum, self.x, self.y))
+        print(repr(self))
 
     def __cmp__(self, other):
         if self.y < other.y:
@@ -393,10 +396,15 @@ class Edge(object):
             newedge.b = dy/dx
             newedge.c /= dx
         else:
+        elif ady < adx:
             # set formula of line, with y fixed to 1
             newedge.b = 1.0
             newedge.a = dx/dy
             newedge.c /= dy
+        else:
+            newedge.a = 0
+            newedge.b = 0
+            newedge.c = 0
 
         newedge.edgenum = Edge.EDGE_NUM
         Edge.EDGE_NUM += 1
