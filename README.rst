@@ -91,6 +91,8 @@ pyGeoDb kann Postleitzhalenkarten generieren. Dazu kommt die Graphikbibliothek
 Pycairo_ zum Einsatz, die natuerlich vorher installiert sein muss. Karten
 koennen im PDF_, PNG_, EPS und SVG Format erstellt werden.
 
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland.png
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_gebiete.png
 .. image:: http://static.23.nu/md/Pictures/deutschland_stadte.png
 .. image:: http://static.23.nu/md/Pictures/plz_einfaerben.png
 .. image:: http://static.23.nu/md/Pictures/plz_flaechen.png
@@ -109,7 +111,7 @@ Rufen Sie ``./plz_draw --help`` auf, um die Aufrufparameter angezeigt zu
 bekommen. Beispieldateien kann man durch das Kommando `make maps` erstellen -
 die entsprechenden kommandos finden sich in der Datei Makefile, unten.
 
-.. _Pycairo: http://cairographics.org/pycairo/ 
+.. _Pycairo: http://cairographics.org/pycairo/
 .. _PDF: https://github.com/mdornseif/pyGeoDb/raw/master/maps/deutschland_gebiete.pdf
 .. _PNG: https://github.com/mdornseif/pyGeoDb/raw/master/maps/deutschland_gebiete.png
 .. _`Voronoi-Diagramm`: http://de.wikipedia.org/wiki/Voronoi-Diagramm
@@ -123,7 +125,7 @@ Kommandos::
     $ python ./plz_draw --borders --acol=4:#f00 --acol=3:#0f0 --acol=2:#00f \
     --acol=1:#ff0 --acol=0:#f0f --acol=5:#0ff --acol=6:#07f --acol=7:#f70 \
     --acol=8:#7f7 --acol=9:#70f test.pdf
-    
+
     # 42859 und darueberliegende Bereiche markieren
     $ python ./plz_draw --borders --acol=42859:#f00 --acol=428:#0f0 \
     --acol=42:#00f test.pdf
