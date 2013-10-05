@@ -87,16 +87,11 @@ Kartengeneriertung
 
 .. _hyperlink-name: karten
 
-pyGeoDb kann Postleitzhalenkarten generieren. Dazu kommt die Graphikbibliothek
+pyGeoDb kann Postleitzalenkarten generieren. Dazu kommt die Graphikbibliothek
 Pycairo_ zum Einsatz, die natuerlich vorher installiert sein muss. Karten
 koennen im PDF_, PNG_, EPS und SVG Format erstellt werden.
 
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland.png
-.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_gebiete.png
-.. image:: http://static.23.nu/md/Pictures/plz_einfaerben.png
-.. image:: http://static.23.nu/md/Pictures/plz_flaechen.png
-.. image:: http://static.23.nu/md/Pictures/plz_deutschland_gebiete.png
-.. image:: http://static.23.nu/md/Pictures/ZZ625F1174.png
 
 Es gibt keine freie Datenquelle zu Groesse und Form der einzelnen
 Postleitzahlenbereiche. Jedoch kann man sich der Form der
@@ -105,6 +100,8 @@ Dies weicht im Detail zwar deutlich von den realen Postleitzahlenbereichen ab,
 reicht aber fuer Visualisierungsaufgaben aus. Zur Erzeugung des Graphen, der
 die Postleitzahlenbereiche unterteilt, wird der "Fortune Algorithmus"
 werwendet.
+
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_gebiete.png
 
 Rufen Sie ``./plz_draw --help`` auf, um die Aufrufparameter angezeigt zu
 bekommen. Beispieldateien kann man durch das Kommando `make maps` erstellen -
@@ -127,6 +124,8 @@ Kommandos::
 
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/plzgebiete.png.png
 
+Oder::
+
     # 42859 und darueberliegende Bereiche markieren
     $ python ./plz_draw --borders --acol=42859:#f00 --acol=428:#0f0 \
     --acol=42:#00f test.pdf
@@ -134,15 +133,15 @@ Kommandos::
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/42xxx.png
 
 Man kann stattdessen auch die Mittelpunkte der Postleitzahlengebiete markieren.
-Dabei gibt man mit `-c 250` die grösse der Punkte an.
+Dabei gibt man mit `-c 250` die grösse der Punkte an::
 
     python ./plz_draw --borders --cencol=52:#f00 --cencol=50:#00f --cencol=10:#0f0 -c 250 maps/centercolors.png
 
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/centercolors.png
 
-Natürlich kann man das auch alles mischen.
+Natürlich kann man das auch alles mischen::
 
-    python ./plz_draw --borders --acol=40:#ff0 --acol=42:#0ff --acol=45:#0f0 --cencol=52:#f00 --cencol=50:#00f --cencol=10:#0f0 -c 400 -mBielefeld maps/manycolors.png
+    python ./plz_draw --borders --acol=40:#ff0 --acol=42:#0ff --acol=45:#0f0 --cencol=52:#f00 --cencol=50:#00f --cencol=10:#0f0 -c 300 -mBielefeld maps/manycolors.png
 
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/manycolors.png
 

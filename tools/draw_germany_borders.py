@@ -4,20 +4,21 @@
 draw_germany_borders.py Draws germany
 
 Created by Maximillian Dornseif on 2010-01-18.
-Copyright (c) 2010 HUDORA. All rights reserved.
+Copyright (c) 2010, 2013 HUDORA. All rights reserved.
 """
 
-import random, math, sys
-from optparse import OptionParser
 import cairo
 import pygeodb
 from pprint import pprint
 
+
 def intRGB(r, g, b):
-        return (r/255.0, g/255.0, b/255.0)
+        return (r / 255.0, g / 255.0, b / 255.0)
+
 
 class NiceCtx(cairo.Context):
-    defaultBorderColour = intRGB(0x7d/255.0, 0x7d/255.0, 0x7d/255.0)
+    defaultBorderColour = intRGB(0x7d / 255.0, 0x7d / 255.0, 0x7d / 255.0)
+
     def stroke_border(self, border):
         src = self.get_source()
         width = self.get_line_width()
@@ -26,7 +27,7 @@ class NiceCtx(cairo.Context):
         self.set_source(src)
         self.set_line_width(width - (border * 2))
         self.stroke()
-        
+
     def init_geoscale(self, minx, xwidth, miny, yheight):
         self.minx = minx
         self.miny = miny
@@ -34,10 +35,10 @@ class NiceCtx(cairo.Context):
         self.yheight = yheight
         self.geoscalefactor = 1 / max([xwidth, yheight])
         self.geoscalefactor = self.geoscalefactor
-        
+
     def geoscale(self, x, y):
         # we use 1.35 for a very simple "projection"
-        return (x-self.minx)*self.geoscalefactor, ((y-self.miny)*self.geoscalefactor*-1.35) + 1.35
+        return (x - self.minx) * self.geoscalefactor, ((y - self.miny) * self.geoscalefactor * -1.35) + 1.35
 
 
 class Canvas:
@@ -50,7 +51,7 @@ class Canvas:
         context = NiceCtx(self.surface)
         self.ctxscale = min([self.width, self.height])
         context.scale(self.ctxscale, self.ctxscale)
-        self.ctxscale = 1/float(self.ctxscale)
+        self.ctxscale = 1 / float(self.ctxscale)
         return context
 
     def background(self, r, g, b):
@@ -62,7 +63,7 @@ class Canvas:
 
     def save(self, fname, vertical):
         surf = self.surface
-        #surf.write_to_png(fname)
+        surf.write_to_png(fname)
 
 c = Canvas(480, 640, 'deutschlandgrenzen.pdf')
 ctx = c.ctx()
@@ -82,16 +83,16 @@ for track in deutschgrenzen:
     for long, lat in track:
         x.append(long)
         y.append(lat)
-ctx.init_geoscale(min(x), max(x)-min(x), min(y), max(y)-min(y))
+ctx.init_geoscale(min(x), max(x) - min(x), min(y), max(y) - min(y))
 ctx.set_antialias(cairo.ANTIALIAS_SUBPIXEL)
-ctx.set_line_width(0.5*c.ctxscale)
+ctx.set_line_width(0.5 * c.ctxscale)
 
 
-borderskip = 10 # Borders are too detailed, only use 10% of data
+borderskip = 10  # Borders are too detailed, only use 10% of data
 # use borders as clipping region
 for track in deutschgrenzen:
     ctx.move_to(*ctx.geoscale(*track[0]))
-    for long, lat in track[1::borderskip]: 
+    for long, lat in track[1::borderskip]:
         ctx.line_to(*ctx.geoscale(long, lat))
     ctx.close_path()
 #mask_ctx.fill()
@@ -100,7 +101,7 @@ ctx.clip()
 # draw borders
 for track in deutschgrenzen:
     ctx.move_to(*ctx.geoscale(*track[0]))
-    for long, lat in track[1::borderskip]: # Borders are too detailed, only use 20% of data
+    for long, lat in track[1::borderskip]:  # Borders are too detailed, only use 20% of data
         ctx.line_to(*ctx.geoscale(long, lat))
     ctx.close_path()
 ctx.stroke()
@@ -128,17 +129,17 @@ pprint(edges)
 pprint(edges2input)
 
 print(pts[3].x, pts[3].y)
-ctx.set_line_width(0.01*c.ctxscale)
+ctx.set_line_width(0.01 * c.ctxscale)
 for (l, p1, p2) in edges2input:
     if p1 == 3 or p2 == 3:
         print((l, p1, p2), points[p1], points[p2])
         ctx.move_to(*ctx.geoscale(*points[p1]))
         ctx.line_to(*ctx.geoscale(*points[p2]))
         ctx.stroke()
-        
-        
+
+
 # draw voronoi diagram for plz areas
-ctx.set_line_width(0.1*c.ctxscale)
+ctx.set_line_width(0.1 * c.ctxscale)
 for (l, p1, p2) in edges:
     x1 = y1 = x2 = y2 = None
     if p1 > -1:
@@ -148,14 +149,14 @@ for (l, p1, p2) in edges:
         a, b, c = lines[l]
         print("%f*x + %f*y = %f" % (a, b, c))
         x1 = x2 - 0.25
-        y1 = -1 * ((a*x1 - c) / b)
+        y1 = -1 * ((a * x1 - c) / b)
     if p2 > -1:
         x2, y2 = points[p2]
     else:
         a, b, c = lines[l]
         print("%f*x + %f*y = %f" % (a, b, c))
         x2 = x1 + 0.25
-        y2 = -1 * ((a*x2 - c) / b)
+        y2 = -1 * ((a * x2 - c) / b)
     if x1 and y1 and x2 and y2:
         print(x1, y1, x2, y2)
         ctx.move_to(*ctx.geoscale(x1, y1))

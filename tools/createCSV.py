@@ -11,9 +11,10 @@ ifile = open(sys.argv[1])
 ofile = open(sys.argv[2], "w")
 linec = 0
 for line in ifile:
-    if line[-1] == "\n": line = line[:-1]
+    if line[-1] == "\n":
+        line = line[:-1]
     linec += 1
-    pll  = line.split("|")
+    pll = line.split("|")
 
     #map(str, pll)
     plz, lon, lat = map(string.strip, pll)

@@ -30,8 +30,8 @@ distanz_liste = sort(locations, referenz)
 from __future__ import absolute_import
 
 import math
-import operator
 from pygeodb.plzdata import geodata
+
 
 class PLZ:
     def __init__(self, plz, land='DE'):
@@ -60,10 +60,11 @@ def _obj2plz(obj):
     else:
         return PLZ(obj)
 
+
 def distance(locationa, locationb):
     plza = _obj2plz(locationa)
     plzb = _obj2plz(locationb)
-    return plza-plzb
+    return plza - plzb
 
 
 def distances(reference, locations):

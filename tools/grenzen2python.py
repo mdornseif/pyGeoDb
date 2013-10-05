@@ -8,8 +8,6 @@ Copyright (c) 2010 HUDORA. All rights reserved.
 """
 
 import sys
-import os
-import unittest
 from pprint import pprint
 
 from xml.etree.ElementTree import ElementTree

@@ -1,18 +1,20 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import random, math, sys
-from optparse import OptionParser
+# -*- coding: utf-8 -*-import cairo
+
 import cairo
 import pygeodb
 from pprint import pprint
 
-def intRGB(r, g, b):
-        return (r/255.0, g/255.0, b/255.0)
 
-HIGHLIGHT=intRGB(0xff, 0x72, 0x72)
+def intRGB(r, g, b):
+        return (r / 255.0, g / 255.0, b / 255.0)
+
+HIGHLIGHT = intRGB(0xff, 0x72, 0x72)
+
 
 class NiceCtx(cairo.Context):
     defaultBorderColour = intRGB(0x7d, 0x7d, 0x7d)
+
     def stroke_border(self, border):
         src = self.get_source()
         width = self.get_line_width()
@@ -21,7 +23,7 @@ class NiceCtx(cairo.Context):
         self.set_source(src)
         self.set_line_width(width - (border * 2))
         self.stroke()
-        
+
     def init_geoscale(self, minx, xwidth, miny, yheight):
         self.minx = minx
         self.miny = miny
@@ -29,10 +31,10 @@ class NiceCtx(cairo.Context):
         self.yheight = yheight
         self.geoscalefactor = 1 / max([xwidth, yheight])
         self.geoscalefactor = self.geoscalefactor
-        
+
     def geoscale(self, x, y):
         # we use 1.35 for a very simple "projection"
-        return (x-self.minx)*self.geoscalefactor, ((y-self.miny)*self.geoscalefactor*-1.35) + 1.35
+        return (x - self.minx) * self.geoscalefactor, ((y - self.miny) * self.geoscalefactor * -1.35) + 1.35
 
 
 class Canvas:
@@ -45,7 +47,7 @@ class Canvas:
         context = NiceCtx(self.surface)
         self.ctxscale = min([self.width, self.height])
         context.scale(self.ctxscale, self.ctxscale)
-        self.ctxscale = 1/float(self.ctxscale)
+        self.ctxscale = 1 / float(self.ctxscale)
         return context
 
     def background(self, r, g, b):
@@ -57,7 +59,7 @@ class Canvas:
 
     def save(self, fname, vertical):
         surf = self.surface
-        #surf.write_to_png(fname)
+        surf.write_to_png(fname)
 
 c = Canvas(480, 640)
 ctx = c.ctx()
@@ -73,11 +75,9 @@ y = []
 for plz, (long, lat, name) in geoitems:
     x.append(long)
     y.append(lat)
-ctx.init_geoscale(min(x), max(x)-min(x), min(y), max(y)-min(y))
+ctx.init_geoscale(min(x), max(x) - min(x), min(y), max(y) - min(y))
 ctx.set_antialias(cairo.ANTIALIAS_SUBPIXEL)
-ctx.set_line_width(0.3*c.ctxscale)
-
-
+ctx.set_line_width(0.3 * c.ctxscale)
 
 # see http://lists.cairographics.org/archives/cairo/2009-June/017459.html for drawing points
 for plz, (long, lat, name) in geoitems:
@@ -96,7 +96,7 @@ pprint(points)
 pprint(lines)
 pprint(edges)
 
-ctx.set_line_width(0.1*c.ctxscale)
+ctx.set_line_width(0.1 * c.ctxscale)
 
 for (l, p1, p2) in edges:
     x1 = y1 = x2 = y2 = None
