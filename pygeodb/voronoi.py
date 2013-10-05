@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # from http://www.oxfish.com/python/voronoi.py
+# and https://svn.osgeo.org/qgis/trunk/qgis/python/plugins/fTools/tools/voronoi.py
 #############################################################################
 #
 # Voronoi diagram calculator/ Delaunay triangulator
 # Translated to Python by Bill Simons
 # September, 2005
+#
+# Additional changes by Carson Farmer added November 2010
 #
 # Calculate Delaunay triangulation or the Voronoi polygons for a set of
 # 2D input points.
@@ -113,6 +116,7 @@ class Context(object):
         self.lines     = []    # equation of line 3-tuple (a b c), for the equation of the line a*x+b*y = c
         self.edges     = []    # edge 3-tuple: (line index, vertex 1 index, vertex 2 index)   if either vertex index is -1, the edge extends to infiinity
         self.triangles = []    # 3-tuple of vertex indices
+        self.polygons  = {}    # a dict of site:[edges] pairs
 
     def circle(self, x, y, rad):
         pass
@@ -166,12 +170,20 @@ class Context(object):
         sitenumR = -1
         if edge.ep[Edge.RE] is not None:
             sitenumR = edge.ep[Edge.RE].sitenum
+        if edge.reg[0].sitenum not in self.polygons:
+            self.polygons[edge.reg[0].sitenum] = []
+        if edge.reg[1].sitenum not in self.polygons:
+            self.polygons[edge.reg[1].sitenum] = []
+        self.polygons[edge.reg[0].sitenum].append((edge.edgenum, sitenumL, sitenumR))
+        self.polygons[edge.reg[1].sitenum].append((edge.edgenum, sitenumL, sitenumR))
         self.edges.append((edge.edgenum, sitenumL, sitenumR))
         if(not self.triangulate):
             if self.plot:
                 self.clip_line(edge)
             elif(self.doPrint):
-                print("e %d %d %d" % (edge.edgenum, sitenumL, sitenumR))
+                print "e %d" % edge.edgenum,
+                print " %d " % sitenumL,
+                print "%d" % sitenumR
 
 #------------------------------------------------------------------
 def voronoi(siteList, context):
@@ -310,6 +322,7 @@ def voronoi(siteList, context):
     while he is not edgeList.rightend:
         context.outEdge(he.edge)
         he = he.right
+    Edge.EDGE_NUM = 0
 
 #------------------------------------------------------------------
 def isEqual(a,b,relativeError=TOLERANCE):
@@ -361,8 +374,8 @@ class Edge(object):
 
     def dump(self):
         print("(#%d a=%g, b=%g, c=%g)" % (self.edgenum, self.a, self.b, self.c))
-        print("ep",self.ep)
-        print("reg",self.reg)
+        print("ep", self.ep)
+        print("reg", self.reg)
 
     def setEndpoint(self, lrFlag, site):
         self.ep[lrFlag] = site
@@ -395,8 +408,8 @@ class Edge(object):
         else:
             # set formula of line, with y fixed to 1
             newedge.b = 1.0
-            newedge.a = dx/dy
-            newedge.c /= dy
+            newedge.a = dx/(dy+0.000001)
+            newedge.c /= (dy+0.000001)
 
         newedge.edgenum = Edge.EDGE_NUM
         Edge.EDGE_NUM += 1
@@ -420,7 +433,7 @@ class Halfedge(object):
         print("right: ",   self.right)
         print("edge: ",    self.edge)
         print("pm: ",      self.pm)
-        print("vertex: ")
+        print "vertex: ",
         if self.vertex: self.vertex.dump()
         else: print("None")
         print("ystar: ",   self.ystar)
@@ -751,7 +764,7 @@ def computeDelaunayTriangulation(points):
     """
     siteList = SiteList(points)
     context  = Context()
-    context.triangulate = True
+    context.triangulate = true
     voronoi(siteList, context)
     return context.triangles
 
