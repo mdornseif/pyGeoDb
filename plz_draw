@@ -19,12 +19,14 @@ debug = False
 def colorstring_to_value(colstr):
     if not colstr.startswith('#') or len(colstr) != 4:
         raise RuntimeError("invalid color %r" % colstr)
-    r, g, b = [float(int(x, 16))/0xf for x in list(colstr[1:])]
+    r, g, b = [float(int(x, 16)) / 0xf for x in list(colstr[1:])]
     return (r, g, b)
 
 
 class NiceCtx(cairo.Context):
-    defaultBorderColour = (0x7d/255.0, 0x7d/255.0, 0x7d/255.0)
+    defaultBorderColour = (0x7d / 255.0, 0x7d / 255.0, 0x7d / 255.0)
+    # we use 1.6 for a very simple "projection"
+    projection = 1.6
 
     def stroke_border(self, border):
         src = self.get_source()
@@ -36,20 +38,22 @@ class NiceCtx(cairo.Context):
         self.stroke()
 
     def init_geoscale(self, minx, xwidth, miny, yheight):
+        # wir normalisieren die Karte, dass sie im Koordinatenraum 0.0-1.0 liegt
+        # x ist die Ost/West Ausdehnung
         self.minx = minx
         self.miny = miny
         self.xwidth = xwidth
         self.yheight = yheight
-        self.geoscalefactor = 1 / max([xwidth, yheight])
-        self.geoscalefactor = self.geoscalefactor
+        self.geoscalefactor = 1 / max([xwidth, yheight * self.projection])
 
     def geoscale(self, x, y):
-        # we use 1.35 for a very simple "projection"
-        return (x-self.minx)*self.geoscalefactor, ((y-self.miny)*self.geoscalefactor*-1.35) + 1.35
+        # wir spiegeln auch direkt in Nord-Süd Richutng
+        newx = (x - self.minx) * self.geoscalefactor
+        newy = 1 - ((y - self.miny) * self.geoscalefactor) * self.projection
+        return newx, newy
 
 
 class Canvas:
-
     def __init__(self, width, height, filename):
         self.width, self.height = width, height
         self.needs_save = False
@@ -76,9 +80,11 @@ class Canvas:
         ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
         # Basic scaling so that the context is axexctly 1 unit in the smaller dimension
         # and a little bit more (depending on the aspect ratio) in the other
-        self.ctxscale = min([self.width, self.height])
+        #self.ctxscale = min([self.width, self.height])
+        # hack to better fit germany - remove the next line if you get stupid results
+        self.ctxscale = max([self.width, self.height])
         ctx.scale(self.ctxscale, self.ctxscale)
-        self.ctxscale = 1/float(self.ctxscale)
+        self.ctxscale = 1 / float(self.ctxscale)
         return ctx
 
     def background(self, r, g, b):
@@ -110,7 +116,7 @@ def find_dimensions(geoitems, deutschgrenzen):
         for lon, lat in track:
             x.append(lon)
             y.append(lat)
-    return min(x), max(x)-min(x), min(y), max(y)-min(y)
+    return min(x), max(x) - min(x), min(y), max(y) - min(y)
 
 
 def set_clipping(ctx, deutschgrenzen, borderskip):
@@ -127,7 +133,7 @@ def draw_frontier(ctx, deutschgrenzen, borderskip):
     # draw borders
     for track in deutschgrenzen:
         ctx.move_to(*ctx.geoscale(*track[0]))
-        for lon, lat in track[1::borderskip]: # Borders are too detailed, only use 20% of data
+        for lon, lat in track[1::borderskip]:  # Borders are too detailed, only use 20% of data
             ctx.line_to(*ctx.geoscale(lon, lat))
         ctx.close_path()
     ctx.stroke()
@@ -232,7 +238,7 @@ def draw_voronoi(ctx, geoitems, options):
                 y2 = -1 * ((a*x2 - c) / b)
         if x1 and y1 and x2 and y2:
             if p1 > -1 and p2 > -1:
-                # save for polygon use
+                # save for polygon use if not infinity
                 plzlines.setdefault(plz1, []).append(((x1, y1), (x2, y2)))
                 plzlines.setdefault(plz2, []).append(((x1, y1), (x2, y2)))
 
@@ -243,7 +249,7 @@ def draw_voronoi(ctx, geoitems, options):
                 ctx.stroke()
 
     if not options.areas and not options.areacolors:
-        return # we are finished
+        return  # we are finished
 
     # calculate per PLZ polygons
     for plz, lines in plzlines.items():
@@ -301,7 +307,7 @@ def draw_citymarker(ctx, name, lon, lat, ctxscale):
     ctx.set_source_rgb(0, 0, 0)
     xbearing, ybearing, width, height, xadvance, yadvance = ctx.text_extents(name)
     x, y = ctx.geoscale(lon, lat)
-    ctx.move_to(x-width/2, y+(ybearing*0.8))
+    ctx.move_to(x - width / 2, y + (ybearing * 0.8))
     ctx.show_text(name)
     # draw dot
     ctx.set_source_rgb(0.0, 0.0, 0.0)
@@ -341,7 +347,7 @@ def parse_commandline():
     parser.add_option('-m', '--mark', action='append',
                       help='Draw City names of this PLZ.')
     parser.add_option('-c', '--center', type='int', default=50,
-                      help='Draw centers of postcode areas, 0 to disable [%default]')
+                      help='Draw centers of postcode areas that specific size, 0 to disable [%default]')
     parser.add_option('--centerdefaultcolor', type='string', default='#000',
                       help='Draw centers in this color [%default]')
     parser.add_option('--cencol', action='append',
@@ -360,7 +366,7 @@ def parse_commandline():
                       help='Enables debugging mode')
 
     options, args = parser.parse_args()
-    if len(args) != 1: # we expect no non option arguments
+    if len(args) != 1:  # we expect no non option arguments
         parser.error('incorrect number of arguments')
     return options, args
 
@@ -398,28 +404,28 @@ def main(options, args):
                 continue
             values[plz[:options.digits]] = values.get(plz[:options.digits], 0) + 1
             maxvalue = max([maxvalue, values[plz[:options.digits]]])
-        stepsize = 1.0/maxvalue
+        stepsize = 1.0 / maxvalue
         for plzprefix, value in values.items():
             # options.centercolors[plzprefix] = (1-(value*stepsize*0.8), 1-(value*stepsize*0.8), 1)
-            options.areacolors[plzprefix] = (1-(value*stepsize*0.8), 1-(value*stepsize*0.8), 1)
+            options.areacolors[plzprefix] = (1 - (value * stepsize * 0.8), 1 - (value * stepsize * 0.8), 1)
 
     c = Canvas(options.width, options.height, args[0])
     ctx = c.ctx()
 
     ctx.init_geoscale(*find_dimensions(geoitems, pygeodb.borderdata.deutschgrenzen))
-    ctx.set_line_width(0.1*c.ctxscale)
-    borderskip = 10 # Borders are too detailed, only use 10% of data
+    ctx.set_line_width(0.1 * c.ctxscale)
+    borderskip = 10  # Borders are too detailed, only use 10% of data
     if not options.noclip:
         set_clipping(ctx, pygeodb.borderdata.deutschgrenzen, borderskip)
     if options.borders or options.areas or options.acol:
         draw_voronoi(ctx, geoitems, options)
 
-    ctx.set_line_width(0.5*c.ctxscale)
+    ctx.set_line_width(0.5 * c.ctxscale)
     ctx.set_source_rgba(0, 0, 0, 1)
     if not options.nofrontier:
         draw_frontier(ctx, pygeodb.borderdata.deutschgrenzen, borderskip)
     if options.center:
-        ctx.set_line_width((options.center/100.0)*c.ctxscale)
+        ctx.set_line_width((options.center / 100.0) * c.ctxscale)
         draw_centers(ctx, geoitems, options)
 
     if options.mark:
@@ -438,7 +444,7 @@ def main(options, args):
                 sys.stderr.write("%r not found\n" % markname)
             else:
                 # average
-                draw_citymarker(ctx, markname, sum(locationsx)/len(locationsx), sum(locationsy)/len(locationsy), c.ctxscale)
+                draw_citymarker(ctx, markname, sum(locationsx) / len(locationsx), sum(locationsy) / len(locationsy), c.ctxscale)
     c.save()
 
 
