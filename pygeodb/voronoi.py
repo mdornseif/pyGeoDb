@@ -102,7 +102,7 @@ Algorithmica 2, 153-174.
 import math
 import sys
 import getopt
-TOLERANCE = 1e-9
+TOLERANCE = 1e-15
 BIG_FLOAT = 1e38
 
 #------------------------------------------------------------------
@@ -405,11 +405,15 @@ class Edge(object):
             newedge.a = 1.0
             newedge.b = dy/dx
             newedge.c /= dx
-        else:
+        elif dy:
             # set formula of line, with y fixed to 1
             newedge.b = 1.0
-            newedge.a = dx/(dy+0.000001)
-            newedge.c /= (dy+0.000001)
+            newedge.a = dx/dy
+            newedge.c /= dy
+        else:
+            newedge.b = 1.0
+            newedge.a = dx/(dy+0.0000001)
+            newedge.c /= (dy+0.0000001)
 
         newedge.edgenum = Edge.EDGE_NUM
         Edge.EDGE_NUM += 1

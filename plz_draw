@@ -219,7 +219,9 @@ def draw_voronoi(ctx, geoitems, options):
 
     plzlines = {}
     for (l, p1, p2) in edges:
-        x1 = y1 = x2 = y2 = None
+        # l ist der Index der Original Daten in lines[]
+        # p1 und p2 sind der Index der Endpunkte in points[p2]
+        x1 = y1 = x2 = y2 = None  # Endpunkte der zu zeichnenen Linie
         a, b, c, plz1, plz2 = lines[l]
         if p1 > -1:
             x1, y1 = points[p1]
