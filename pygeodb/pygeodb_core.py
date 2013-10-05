@@ -46,9 +46,9 @@ class PLZ:
         """Calculates the distance between two geolocations"""
         fLat, fLon = math.radians(self.latitude), math.radians(self.longitude)
         tLat, tLon = math.radians(other.latitude), math.radians(other.longitude)
-        distance = math.acos(math.sin(tLat) * math.sin(fLat)
-                             + math.cos(tLat) * math.cos(fLat) * math.cos(tLon
-                             - fLon)) * 6380000
+        distance = math.acos(
+            math.sin(tLat) * math.sin(fLat)
+            + math.cos(tLat) * math.cos(fLat) * math.cos(tLon - fLon)) * 6380000
         return int(distance)
 
 

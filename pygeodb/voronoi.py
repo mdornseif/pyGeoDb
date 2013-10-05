@@ -132,8 +132,8 @@ class Context(object):
             print("site (%d) at %f %f" % (s.sitenum, s.x, s.y))
         elif(self.triangulate):
             pass
-        elif(self.plot):
-            self.circle (s.x, s.y, cradius)
+        #elif(self.plot):
+        #    self.circle(s.x, s.y, cradius)
         elif(self.doPrint):
             print("s %f %f" % (s.x, s.y))
 
