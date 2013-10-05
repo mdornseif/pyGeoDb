@@ -3,7 +3,7 @@
 u"""plz_draw - draws maps of germany displaying postal codes"""
 
 # Created by Maximillian Dornseif on 2010-01-17.
-# Copyright (c) 2010 HUDORA. All rights reserved.
+# Copyright (c) 2010, 2013 HUDORA. All rights reserved.
 
 from __future__ import absolute_import
 
@@ -103,12 +103,12 @@ def find_dimensions(geoitems, deutschgrenzen):
     # find dimenions of data set
     x = []
     y = []
-    for plz, (long, lat, name) in geoitems:
-        x.append(long)
-        y.append(lat)
+    #for plz, (lon, lat, name) in geoitems:
+    #    x.append(lon)
+    #    y.append(lat)
     for track in deutschgrenzen:
-        for long, lat in track:
-            x.append(long)
+        for lon, lat in track:
+            x.append(lon)
             y.append(lat)
     return min(x), max(x)-min(x), min(y), max(y)-min(y)
 
@@ -117,8 +117,8 @@ def set_clipping(ctx, deutschgrenzen, borderskip):
     # use borders as clipping region
     for track in deutschgrenzen:
         ctx.move_to(*ctx.geoscale(*track[0]))
-        for long, lat in track[1::borderskip]:
-            ctx.line_to(*ctx.geoscale(long, lat))
+        for lon, lat in track[1::borderskip]:
+            ctx.line_to(*ctx.geoscale(lon, lat))
         ctx.close_path()
     ctx.clip()
 
@@ -127,8 +127,8 @@ def draw_frontier(ctx, deutschgrenzen, borderskip):
     # draw borders
     for track in deutschgrenzen:
         ctx.move_to(*ctx.geoscale(*track[0]))
-        for long, lat in track[1::borderskip]: # Borders are too detailed, only use 20% of data
-            ctx.line_to(*ctx.geoscale(long, lat))
+        for lon, lat in track[1::borderskip]: # Borders are too detailed, only use 20% of data
+            ctx.line_to(*ctx.geoscale(lon, lat))
         ctx.close_path()
     ctx.stroke()
 
@@ -162,24 +162,23 @@ def draw_centers(ctx, geoitems, options):
     """draw centers of PLZ areas"""
 
     ctx.set_source_rgb(*colorstring_to_value(options.centerdefaultcolor))
-    for plz, (long, lat, name) in sorted(geoitems):
+    for plz, (lon, lat, name) in sorted(geoitems):
         if should_draw(plz, options.limit):
             centercolor = get_centercolor(plz, options)
             if centercolor:
                 ctx.stroke()
                 ctx.set_source_rgb(*centercolor)
-                ctx.move_to(*ctx.geoscale(long, lat))
+                ctx.move_to(*ctx.geoscale(lon, lat))
                 ctx.close_path()
                 ctx.stroke()
                 ctx.set_source_rgb(*colorstring_to_value(options.centerdefaultcolor))
             else:
-                ctx.move_to(*ctx.geoscale(long, lat))
+                ctx.move_to(*ctx.geoscale(lon, lat))
                 ctx.close_path()
     ctx.stroke()
 
 
 class mySite(object):
-    pass
     def __init__(self, lon, lat, plz):
         self.x = lon
         self.y = lat
@@ -296,28 +295,28 @@ def draw_voronoi(ctx, geoitems, options):
                 ctx.fill()
 
 
-def draw_citymarker(ctx, name, long, lat, ctxscale):
+def draw_citymarker(ctx, name, lon, lat, ctxscale):
     """Draw a Black-White-Red circle and the city name"""
     # draw text
     ctx.set_source_rgb(0, 0, 0)
     xbearing, ybearing, width, height, xadvance, yadvance = ctx.text_extents(name)
-    x, y = ctx.geoscale(long, lat)
+    x, y = ctx.geoscale(lon, lat)
     ctx.move_to(x-width/2, y+(ybearing*0.8))
     ctx.show_text(name)
     # draw dot
     ctx.set_source_rgb(0.0, 0.0, 0.0)
     ctx.set_line_width(6 * ctxscale)
-    ctx.move_to(*ctx.geoscale(long, lat))
+    ctx.move_to(*ctx.geoscale(lon, lat))
     ctx.close_path()
     ctx.stroke()
     ctx.set_source_rgb(1.0, 1.0, 1.0)
     ctx.set_line_width(5 * ctxscale)
-    ctx.move_to(*ctx.geoscale(long, lat))
+    ctx.move_to(*ctx.geoscale(lon, lat))
     ctx.close_path()
     ctx.stroke()
     ctx.set_source_rgb(1.0, 0.0, 0.0)
     ctx.set_line_width(4 * ctxscale)
-    ctx.move_to(*ctx.geoscale(long, lat))
+    ctx.move_to(*ctx.geoscale(lon, lat))
     ctx.close_path()
     ctx.stroke()
 
@@ -379,10 +378,12 @@ def main(options, args):
     options.areacolors = {}
 
     if options.cencol:
+        # area center (city) colors
         for value in options.cencol:
             prefix, color = value.split(':')
             options.centercolors[prefix] = colorstring_to_value(color)
     if options.acol:
+        # area colors
         for value in options.acol:
             prefix, color = value.split(':')
             options.areacolors[prefix] = colorstring_to_value(color)
@@ -429,9 +430,9 @@ def main(options, args):
             markname = markname.decode('utf-8')
             locationsx = []
             locationsy = []
-            for plz, (long, lat, name) in geoitems:
+            for plz, (lon, lat, name) in geoitems:
                 if name == markname:
-                    locationsx.append(long)
+                    locationsx.append(lon)
                     locationsy.append(lat)
             if not locationsx:
                 sys.stderr.write("%r not found\n" % markname)
