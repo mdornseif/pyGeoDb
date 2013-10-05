@@ -93,8 +93,7 @@ koennen im PDF_, PNG_, EPS und SVG Format erstellt werden.
 
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland.png
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_gebiete.png
-.. image:: http://f.cl.ly/items/060v26040D3H0Y2j2q38/deutschland_stadte.png
-.. image:: http://static.23.nu/md/Pictures/deutschland_stadte.png
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_stadte.png
 .. image:: http://static.23.nu/md/Pictures/plz_einfaerben.png
 .. image:: http://static.23.nu/md/Pictures/plz_flaechen.png
 .. image:: http://static.23.nu/md/Pictures/plz_deutschland_gebiete.png
@@ -192,11 +191,11 @@ Ziffern der Postleitzahl zur Zusammenfassung verwendet. Geben sie ``make
 maps`` ein, und schauen Sie die fuenf Dateien ``maps/beispiel?.pdf`` an, um
 die Auswirkung des ``--digits``-Parameters zu sehen.
 
-.. image:: http://static.23.nu/md/Pictures/beispiel5.png
-.. image:: http://static.23.nu/md/Pictures/beispiel4.png
-.. image:: http://static.23.nu/md/Pictures/beispiel3.png
-.. image:: http://static.23.nu/md/Pictures/beispiel2.png
-.. image:: http://static.23.nu/md/Pictures/beispiel1.png
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/beispiel5_klein.png
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/beispiel4_klein.png
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/beispiel3_klein.png
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/beispiel2_klein.png
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/beispiel1_klein.png
 
 
 Autoren
