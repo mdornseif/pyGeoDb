@@ -5,7 +5,6 @@ python:
 # command to install dependencies
 install:
   - pip install pep8 pyflakes pylint --use-mirrors
-  - pip install pycairo --use-mirrors
   - pip install coveralls --use-mirrors
 script: make test maps
 after_success:
