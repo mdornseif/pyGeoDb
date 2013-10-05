@@ -93,6 +93,7 @@ koennen im PDF_, PNG_, EPS und SVG Format erstellt werden.
 
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland.png
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_gebiete.png
+.. image:: http://f.cl.ly/items/060v26040D3H0Y2j2q38/deutschland_stadte.png
 .. image:: http://static.23.nu/md/Pictures/deutschland_stadte.png
 .. image:: http://static.23.nu/md/Pictures/plz_einfaerben.png
 .. image:: http://static.23.nu/md/Pictures/plz_flaechen.png
