@@ -332,9 +332,9 @@ def parse_commandline():
     parser.description = __doc__
 
     parser.set_usage('usage: %prog [options] outputfile. Try %prog --help for details.')
-    parser.add_option('--width', type='int', default=480,
+    parser.add_option('--width', type='int', default=768,
                       help='Width of generated Image [%default]')
-    parser.add_option('--height', type='int', default=640,
+    parser.add_option('--height', type='int', default=1024,
                       help='Heigth of generated Image [%default]')
     parser.add_option('-l', '--limit', action='append',
                       help='Limit PLZ matiching to this prefifx, can be given more than once.')

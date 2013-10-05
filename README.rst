@@ -270,4 +270,5 @@ Wenn Sie einen Fehler bemerken, melden Sie Ihn bitte unter http://github.com/mdo
 .. image:: https://d2weczhvl823v0.cloudfront.net/mdornseif/pygeodb/trend.png
    :alt: Bitdeli badge
    :target: https://bitdeli.com/free
-
+.. image:: https://travis-ci.org/mdornseif/pyGeoDb.png?branch=master
+   :target: https://travis-ci.org/mdornseif/pyGeoDb
