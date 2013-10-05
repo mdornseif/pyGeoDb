@@ -6,6 +6,6 @@ python:
 install:
   - pip install pep8 pyflakes pylint --use-mirrors
   - pip install coveralls --use-mirrors
-script: make test maps
+script: make test
 after_success:
   - coveralls
