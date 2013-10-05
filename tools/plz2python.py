@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# parse old style OpenGeoDB data files and generate a python data structure form it
+
 from pprint import pprint
 import sys
 
