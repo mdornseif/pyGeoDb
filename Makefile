@@ -7,6 +7,9 @@ check:
 test: check data
 	PYTHONPATH=. python -c 'import doctest; doctest.testfile("README.rst")'
 
+coverage:
+	coverage run coverage_test.py
+
 cleanup: # this does NOT convert to python 3.x
 	2to3-2.6 -w -f zip -f xreadlines -f xrange -f ws_comma -f throw -f standarderror -f set_literal \
 	-f repr -f renames -f reduce -f raise -f paren -f nonzero -f ne -f itertools_imports -f itertools \

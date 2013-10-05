@@ -5,7 +5,9 @@ python:
 # command to install dependencies
 install:
   - pip install pep8 pyflakes pylint --use-mirrors
-  - pip install coveralls --use-mirrors
-script: make test
+  - pip install coverage coveralls --use-mirrors
+script: make test coverage
 after_success:
   - coveralls
+notifications:
+  email: false

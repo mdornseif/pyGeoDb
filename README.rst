@@ -122,7 +122,7 @@ Kommandos::
     --acol=1:#ff0 --acol=0:#f0f --acol=5:#0ff --acol=6:#07f --acol=7:#f70 \
     --acol=8:#7f7 --acol=9:#70f test.pdf
 
-.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/plzgebiete.png.png
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/plzgebiete.png
 
 Oder::
 
@@ -272,3 +272,5 @@ Wenn Sie einen Fehler bemerken, melden Sie Ihn bitte unter http://github.com/mdo
    :target: https://bitdeli.com/free
 .. image:: https://travis-ci.org/mdornseif/pyGeoDb.png?branch=master
    :target: https://travis-ci.org/mdornseif/pyGeoDb
+.. image:: https://coveralls.io/repos/mdornseif/pyGeoDb/badge.png
+   :target: https://coveralls.io/r/mdornseif/pyGeoDb
