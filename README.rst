@@ -93,7 +93,6 @@ koennen im PDF_, PNG_, EPS und SVG Format erstellt werden.
 
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland.png
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_gebiete.png
-.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_stadte.png
 .. image:: http://static.23.nu/md/Pictures/plz_einfaerben.png
 .. image:: http://static.23.nu/md/Pictures/plz_flaechen.png
 .. image:: http://static.23.nu/md/Pictures/plz_deutschland_gebiete.png
@@ -109,7 +108,7 @@ werwendet.
 
 Rufen Sie ``./plz_draw --help`` auf, um die Aufrufparameter angezeigt zu
 bekommen. Beispieldateien kann man durch das Kommando `make maps` erstellen -
-die entsprechenden kommandos finden sich in der Datei Makefile, unten.
+die entsprechenden Kommandos finden sich in der Datei Makefile, unten.
 
 .. _Pycairo: http://cairographics.org/pycairo/
 .. _PDF: https://github.com/mdornseif/pyGeoDb/raw/master/maps/deutschland_gebiete.pdf
@@ -126,9 +125,27 @@ Kommandos::
     --acol=1:#ff0 --acol=0:#f0f --acol=5:#0ff --acol=6:#07f --acol=7:#f70 \
     --acol=8:#7f7 --acol=9:#70f test.pdf
 
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/plzgebiete.png.png
+
     # 42859 und darueberliegende Bereiche markieren
     $ python ./plz_draw --borders --acol=42859:#f00 --acol=428:#0f0 \
     --acol=42:#00f test.pdf
+
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/42xxx.png
+
+Man kann stattdessen auch die Mittelpunkte der Postleitzahlengebiete markieren.
+Dabei gibt man mit `-c 250` die grösse der Punkte an.
+
+    python ./plz_draw --borders --cencol=52:#f00 --cencol=50:#00f --cencol=10:#0f0 -c 250 maps/centercolors.png
+
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/centercolors.png
+
+Natürlich kann man das auch alles mischen.
+
+    python ./plz_draw --borders --acol=40:#ff0 --acol=42:#0ff --acol=45:#0f0 --cencol=52:#f00 --cencol=50:#00f --cencol=10:#0f0 -c 400 -mBielefeld maps/manycolors.png
+
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/manycolors.png
+
 
 Man kann auf der Karte Ortsnamen anzeigen lassen. Wenn ein Ort mehrere
 Postleitzahlen hat, wird der Ortsname am gemittelten Zentrum der verschiedenen
@@ -148,6 +165,7 @@ nicht problemlos darstellen. Sie koennen die Parameter ``-mDuesseldorf
 -mMuenchen -mKoeln -mNuernberg -mLuebeck -mSaarbruecken -mWuerzburg
 -mGoettingen`` wenn Sie jeweils die korrekten Umlaute einsetzen.
 
+.. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_stadte.png
 
 Paramerisierte Kartenfaerbung
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
