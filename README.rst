@@ -8,7 +8,7 @@ the system to US data by integrating US data as used in Ben Fry's zipdecode_.
 
 You can download the latest release at http://pypi.python.org/pypi/pyGeoDb/#, development releases are available at http://github.com/mdornseif/pyGeoDb#.
 
-Die ist ein Python Interface zu OpenGeoDb. "Im Mittelpunkt des Projektes
+Dies ist ein Python Interface zu OpenGeoDb. "Im Mittelpunkt des Projektes
 OpenGeoDB steht der Aufbau einer moeglichst vollstaendigen Datenbank mit
 Geokoordinaten zu allen Orten und Postleitzahlen (bisher: A,B,CH,D und FL)."
 (OpenGeoDB Wiki) Die Datenbank wird ueberwiegend zur Umkreissuche_ oder zur
@@ -16,7 +16,7 @@ Geokoordinaten zu allen Orten und Postleitzahlen (bisher: A,B,CH,D und FL)."
 mit GeoClassPHP_ verwendet. Fuer Python gibt es bisher keine weit verbreitete
 Loesung.
 
-Zusaetzlich hilft PyGeoDb bei der Erstellung zon Postleitzahlen Karten. Dazu
+Zusaetzlich hilft PyGeoDb bei der Erstellung von Postleitzahlen-Karten. Dazu
 werden neben den OpenGeoDb Daten auch Informationen aus Openstreetmap
 herangezogen.
 
@@ -35,7 +35,7 @@ Entfernungsberechnung
 
 PyGeoDb kann die Entfernung in Metern zwischen zwei Postleitzahlenbereichen
 berechnen. Dazu kann direkt eine Postleitzahl als String, ein dict, oder ein
-Objekt, dass dem AddressProtocol_ entspricht, uebergeben werden::
+Objekt, das dem AddressProtocol_ entspricht, uebergeben werden::
 
     >>> import pygeodb
     >>> pygeodb.distance("42897", "50933") # strings
@@ -55,8 +55,8 @@ Sortieren nach Entfernung
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 pyGeoDb kann eine Liste von Postleitzahlen nach der Entfernung zu einer
-bestimmten Postleitzahl sortieren. Dabei koennen, Strings sowie Dicts und
-Objekte nach dem AddressProtocol gemischt werden::
+bestimmten Postleitzahl sortieren. Dabei koennen Strings sowie Dicts und
+Objekte nach dem AddressProtocol_ gemischt werden::
 
     >>> pygeodb.nearest("42897", ["42477", "48143", {'plz': "45149"}, loc]) #doctest: +ELLIPSIS
     ['42477', {'plz': '45149'}, <__main__.LocationObject object ...>, '48143']
@@ -74,7 +74,7 @@ Fehlerbehandlung
 ~~~~~~~~~~~~~~~~
 
 Wenn eine Postleitzahl unbekannt ist, wird eine ValueError() Exception
-ausgeloesst::
+ausgeloest::
 
     >>> pygeodb.distance("42897", "99999") # Strings
     Traceback (most recent call last):
@@ -87,7 +87,7 @@ Kartengeneriertung
 
 .. _hyperlink-name: karten
 
-pyGeoDb kann Postleitzalenkarten generieren. Dazu kommt die Graphikbibliothek
+pyGeoDb kann Postleitzahlenkarten generieren. Dazu kommt die Graphikbibliothek
 Pycairo_ zum Einsatz, die natuerlich vorher installiert sein muss. Karten
 koennen im PDF_, PNG_, EPS und SVG Format erstellt werden.
 
@@ -148,7 +148,7 @@ Natürlich kann man das auch alles mischen::
 
 Man kann auf der Karte Ortsnamen anzeigen lassen. Wenn ein Ort mehrere
 Postleitzahlen hat, wird der Ortsname am gemittelten Zentrum der verschiedenen
-Postleitzahlenbereiche gezeichnet. Eine Karte mit dem meissten deutschen
+Postleitzahlenbereiche gezeichnet. Eine Karte mit dem meisten deutschen
 Grossstaedten erhaelt man mit folgendem Kommando::
 
     python ./plz_draw -mBerlin -mHamburg -mStuttgart -mDortmund -mBremen
@@ -162,18 +162,18 @@ Die Eigabe der Staedtenamen mit Umlauten ist je nach Konfiguration des
 Betriebssystems problematisch. Auch lassen sich diese in dieser Hilfedatei
 nicht problemlos darstellen. Sie koennen die Parameter ``-mDuesseldorf
 -mMuenchen -mKoeln -mNuernberg -mLuebeck -mSaarbruecken -mWuerzburg
--mGoettingen`` wenn Sie jeweils die korrekten Umlaute einsetzen.
+-mGoettingen`` verwenden, wenn Sie jeweils die korrekten Umlaute einsetzen.
 
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/deutschland_stadte.png
 
-Paramerisierte Kartenfaerbung
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Parametrisierte Kartenfaerbung
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Das Programm kann auch Postleitzahlenbereiche je nach Haeufigkeit des
 Aufkommens von Postleitzahlen in einer Datei einfaerben. Das ist z.B. Karten,
-die die Kundenverteilung ider dergleichen visualisieren, geeignet.
+die die Kundenverteilung oder dergleichen visualisieren, geeignet.
 
-Erzeugen Sie datzu eineTatei mit Test-Postleitzahlen. Schreiben Sie z.B
+Erzeugen Sie dazu eine Datei mit Test-Postleitzahlen. Schreiben Sie z.B
 folgendes in eine Datei test.txt::
 
     42477
@@ -188,7 +188,7 @@ folgendes in eine Datei test.txt::
     42899
     42929
 
-Nun kann man diese Daten nutzen, um eine Entsprechend eingefaerbte Karte zu
+Nun kann man diese Daten nutzen, um eine entsprechend eingefaerbte Karte zu
 erstellen::
 
     # eingefaerbte Gebiete
@@ -198,14 +198,14 @@ erstellen::
 vor) die restlichen Felder werden nur leicht eingefaerbt. Fuer Tests sind
 Beispieldaten in data/beispielverteilung.txt beigelegt.
 
-Solange Sie nicht sehr grosse Datenbestaende, von mehr als einer halben
-Million Datensaetze haben, werden die Eingefaerbten Karten recht
+Solange Sie nicht sehr grosse Datenbestaende von mehr als einer halben
+Million Datensaetze haben, werden die eingefaerbten Karten recht
 unregelmaessig aussehen. Dem kann man entgegenwirken, indem man die Daten von
 Postleitzahlenbereichen mit gleichem Prefix zusammenfasst, um ein
 gleichmaessigeres Ergebnis zu erzielen. Dies geht mit dem Parameter
 ``--digits``. Wenn Sie ``--digits=3`` uebergeben, werden nur die ersten drei
 Ziffern der Postleitzahl zur Zusammenfassung verwendet. Geben sie ``make
-maps`` ein, und schauen Sie die fuenf Dateien ``maps/beispiel?.pdf`` an, um
+maps`` ein, und schauen Sie sich die fuenf Dateien ``maps/beispiel?.pdf`` an, um
 die Auswirkung des ``--digits``-Parameters zu sehen.
 
 .. image:: https://raw.github.com/mdornseif/pyGeoDb/master/maps/beispiel5_klein.png
@@ -239,7 +239,7 @@ beruht.
 Alternativen, Quellen & Vermischtes
 -----------------------------------
 
-`d9t.gis`_ ist ein sehr Zope-Lastiges Python Projekt zur Entfernugnsberechnung
+`d9t.gis`_ ist ein sehr Zope-lastiges Python Projekt zur Entfernugnsberechnung
 mit OpenGeoDb Daten. `ruby-opengeodb`_ erlaubt Zugriff auf die OpenGeoDB Daten
 aus Ruby heraus.
 
@@ -257,8 +257,8 @@ Rasterkarten gibt es bei Wikipedia_.
 .. _`ruby-opengeodb`: http://ruby-opengeodb.rubyforge.org/
 .. _Wikipedia: http://de.wikipedia.org/wiki/Postleitzahl_(Deutschland)
 
-Als Alternative Quelle fuer die Deutschen Grenzen kaeme anstatt von
-OpenStreetmap auch NaturalEarth_ in Frage. Geonames_ koennte als Alternative
+Als alternative Quelle fuer die deutschen Grenzen kaeme anstatt von
+OpenStreetmap auch NaturalEarth_ in Frage. Geonames_ koennte als alternative
 Quelle fuer Postleitzahlen dienen.
 
 .. _NaturalEarth: http://www.naturalearthdata.com/
