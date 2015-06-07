@@ -53,7 +53,9 @@ class PLZ:
 
 
 def _obj2plz(obj):
-    if hasattr(obj, 'plz'):
+    if isinstance(obj, PLZ):
+        return obj
+    elif hasattr(obj, 'plz'):
         return PLZ(obj.plz)
     elif hasattr(obj, 'get') and obj.get('plz', None):
         return PLZ(obj['plz'])

@@ -34,6 +34,20 @@
 #
 #############################################################################
 
+from __future__ import print_function
+
+def cmp(a, b):
+    """
+    Just for backwards compatibility...
+    """
+    return a.__cmp__(b)
+
+def next_or_none(i):
+    try:
+        return next(i)
+    except StopIteration:
+        return None
+
 def usage():
     print("""
 voronoi - compute Voronoi diagram or Delaunay triangulation
@@ -181,9 +195,9 @@ class Context(object):
             if self.plot:
                 self.clip_line(edge)
             elif(self.doPrint):
-                print "e %d" % edge.edgenum,
-                print " %d " % sitenumL,
-                print "%d" % sitenumR
+                print("e %d" % edge.edgenum, end='')
+                print(" %d " % sitenumL, end='')
+                print("%d" % sitenumR)
 
 #------------------------------------------------------------------
 def voronoi(siteList, context):
@@ -191,9 +205,9 @@ def voronoi(siteList, context):
     priorityQ = PriorityQueue(siteList.ymin, siteList.ymax, len(siteList))
     siteIter = siteList.iterator()
 
-    bottomsite = siteIter.next()
+    bottomsite = next_or_none(siteIter)
     context.outSite(bottomsite)
-    newsite = siteIter.next()
+    newsite = next_or_none(siteIter)
     minpt = Site(-BIG_FLOAT, -BIG_FLOAT)
     while True:
         if not priorityQ.isEmpty():
@@ -238,7 +252,7 @@ def voronoi(siteList, context):
                 # push the Halfedge into the ordered linked list of vertices
                 priorityQ.insert(bisector, p, newsite.distance(p))
 
-            newsite = siteIter.next()
+            newsite = next_or_none(siteIter)
 
         elif not priorityQ.isEmpty():
             # intersection is smallest - this is a vector (circle) event
@@ -341,6 +355,7 @@ class Site(object):
         print("Site #%d (%g, %g)" % (self.sitenum, self.x, self.y))
 
     def __cmp__(self, other):
+        # lambda s: (s.y, -s.x)
         if self.y < other.y:
             return -1
         elif self.y > other.y:
@@ -437,7 +452,7 @@ class Halfedge(object):
         print("right: ",   self.right)
         print("edge: ",    self.edge)
         print("pm: ",      self.pm)
-        print "vertex: ",
+        print("vertex: ", end='')
         if self.vertex: self.vertex.dump()
         else: print("None")
         print("ystar: ",   self.ystar)
@@ -707,26 +722,17 @@ class SiteList(object):
             if pt.y < self.__ymin: self.__ymin = pt.y
             if pt.x > self.__xmax: self.__xmax = pt.x
             if pt.y > self.__ymax: self.__ymax = pt.y
-        self.__sites.sort()
+        self.__sites.sort(key=lambda s: (s.y, -s.x))
 
     def setSiteNumber(self, site):
         site.sitenum = self.__sitenum
         self.__sitenum += 1
 
-    class Iterator(object):
-        def __init__(this, lst):  this.generator = (s for s in lst)
-        def __iter__(this):      return this
-        def next(this):
-            try:
-                return this.generator.next()
-            except StopIteration:
-                return None
-
     def iterator(self):
-        return SiteList.Iterator(self.__sites)
+        return iter(self.__sites)
 
     def __iter__(self):
-        return SiteList.Iterator(self.__sites)
+        return iter(self.__sites)
 
     def __len__(self):
         return len(self.__sites)
