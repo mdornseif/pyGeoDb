@@ -11,7 +11,7 @@ hubarcode = setup(
     description='distance calculation based on ZIP codes and map generation',
     long_description=
         open('README.rst').read().decode('utf-8') if sys.version < '3'
-        else open('README.rst').read(),
+        else open('README.rst', encoding="utf-8").read(),
     classifiers=['License :: OSI Approved :: BSD License',
                  'Intended Audience :: Developers',
                  'Programming Language :: Python'],
