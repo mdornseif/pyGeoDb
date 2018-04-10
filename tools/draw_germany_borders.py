@@ -10,6 +10,8 @@ Copyright (c) 2010, 2013 HUDORA. All rights reserved.
 import cairo
 import pygeodb
 from pprint import pprint
+from pygeodb.borderdata import deutschgrenzen
+from pygeodb import voronoi
 
 
 def intRGB(r, g, b):
@@ -70,7 +72,6 @@ ctx = c.ctx()
 ctx.set_line_cap(cairo.LINE_CAP_ROUND)
 ctx.set_line_join(cairo.LINE_JOIN_ROUND)
 
-from pygeodb.borderdata import deutschgrenzen
 geoitems = pygeodb.geodata['de'].items()
 
 # find desired image size
@@ -95,7 +96,7 @@ for track in deutschgrenzen:
     for long, lat in track[1::borderskip]:
         ctx.line_to(*ctx.geoscale(long, lat))
     ctx.close_path()
-#mask_ctx.fill()
+# mask_ctx.fill()
 ctx.clip()
 
 # draw borders
@@ -114,7 +115,6 @@ for plz, (long, lat, name) in geoitems:
 ctx.stroke()
 
 # calculate voronoi diagram for plz areas
-from pygeodb import voronoi
 pts = []
 for plz, (long, lat, name) in geoitems:
     if plz.startswith('422'):
@@ -165,4 +165,4 @@ for (l, p1, p2) in edges:
 
 # image background
 ctx.show_page()
-#ctx.fill()
+# ctx.fill()
