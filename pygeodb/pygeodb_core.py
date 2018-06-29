@@ -27,12 +27,10 @@ locations = GeoLocation.select()
 distanz_liste = sort(locations, referenz)
 """
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import absolute_import
-from future_builtins import map, filter, ascii, hex, oct
+from __future__ import absolute_import, print_function, unicode_literals
 
 import math
+
 from pygeodb.plzdata import geodata
 
 
@@ -41,7 +39,8 @@ class PLZ:
         """The python object for a geolocation"""
         self.plz = plz
         self.land = land
-        (self.longitude, self.latitude, self.city) = geodata.get(land.upper(), {}).get(plz, (0, 0, None))
+        (self.longitude, self.latitude, self.city) = geodata.get(
+            land.upper(), {}).get(plz, (0, 0, None))
         if not self.city:
             raise ValueError("Unknown PLZ: %s-%s" % (land, plz))
 
@@ -51,7 +50,7 @@ class PLZ:
         tLat, tLon = math.radians(other.latitude), math.radians(other.longitude)
         distance = math.acos(
             round(math.sin(tLat) * math.sin(fLat) +
-                  math.cos(tLat) * math.cos(fLat) * math.cos(tLon - fLon), 7)) * 6380000
+                  math.cos(tLat) * math.cos(fLat) * math.cos(tLon - fLon), 10)) * 6380000
         return int(distance)
 
 
