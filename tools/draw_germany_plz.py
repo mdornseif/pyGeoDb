@@ -4,6 +4,7 @@
 import cairo
 import pygeodb
 from pprint import pprint
+import voronoi
 
 
 def intRGB(r, g, b):
@@ -85,7 +86,6 @@ for plz, (long, lat, name) in geoitems:
     ctx.close_path()
 ctx.stroke()
 
-import voronoi
 pts = []
 for plz, (long, lat, name) in geoitems:
     pts.append(voronoi.Site(long, lat))

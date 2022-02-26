@@ -5,6 +5,7 @@
 
 from pprint import pprint
 import sys
+import pygeodb.plzdata
 
 geodata = {}
 
@@ -33,11 +34,10 @@ for line in open(sys.argv[1], 'rb'):
     country = str(values[1]).upper()
     longitude = float(values[7])
     latitude = float(values[8])
-    if not country in geodata:
+    if country not in geodata:
         geodata[country] = {}
     geodata[country][zipcode] = (longitude, latitude, city)
 
-import pygeodb.plzdata
 geodata.update(pygeodb.plzdata)
 
 outfile = open(sys.argv[2], 'wb')

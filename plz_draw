@@ -80,7 +80,7 @@ class Canvas:
         ctx.set_antialias(cairo.ANTIALIAS_DEFAULT)
         # Basic scaling so that the context is axexctly 1 unit in the smaller dimension
         # and a little bit more (depending on the aspect ratio) in the other
-        #self.ctxscale = min([self.width, self.height])
+        # self.ctxscale = min([self.width, self.height])
         # hack to better fit germany - remove the next line if you get stupid results
         self.ctxscale = max([self.width, self.height])
         ctx.scale(self.ctxscale, self.ctxscale)
@@ -109,7 +109,7 @@ def find_dimensions(geoitems, deutschgrenzen):
     # find dimenions of data set
     x = []
     y = []
-    #for plz, (lon, lat, name) in geoitems:
+    # for plz, (lon, lat, name) in geoitems:
     #    x.append(lon)
     #    y.append(lat)
     for track in deutschgrenzen:

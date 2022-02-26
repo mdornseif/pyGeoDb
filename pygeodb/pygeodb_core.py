@@ -27,9 +27,10 @@ locations = GeoLocation.select()
 distanz_liste = sort(locations, referenz)
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function, unicode_literals
 
 import math
+
 from pygeodb.plzdata import geodata
 
 
@@ -38,7 +39,8 @@ class PLZ:
         """The python object for a geolocation"""
         self.plz = plz
         self.land = land
-        (self.longitude, self.latitude, self.city) = geodata.get(land.upper(), {}).get(plz, (0, 0, None))
+        (self.longitude, self.latitude, self.city) = geodata.get(
+            land.upper(), {}).get(plz, (0, 0, None))
         if not self.city:
             raise ValueError("Unknown PLZ: %s-%s" % (land, plz))
 
@@ -47,13 +49,15 @@ class PLZ:
         fLat, fLon = math.radians(self.latitude), math.radians(self.longitude)
         tLat, tLon = math.radians(other.latitude), math.radians(other.longitude)
         distance = math.acos(
-            math.sin(tLat) * math.sin(fLat)
-            + math.cos(tLat) * math.cos(fLat) * math.cos(tLon - fLon)) * 6380000
+            round(math.sin(tLat) * math.sin(fLat) +
+                  math.cos(tLat) * math.cos(fLat) * math.cos(tLon - fLon), 10)) * 6380000
         return int(distance)
 
 
 def _obj2plz(obj):
-    if hasattr(obj, 'plz'):
+    if isinstance(obj, PLZ):
+        return obj
+    elif hasattr(obj, 'plz'):
         return PLZ(obj.plz)
     elif hasattr(obj, 'get') and obj.get('plz', None):
         return PLZ(obj['plz'])

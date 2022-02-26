@@ -16,21 +16,21 @@ for line in ifile:
     linec += 1
     pll = line.split("|")
 
-    #map(str, pll)
+    # map(str, pll)
     plz, lon, lat = map(string.strip, pll)
 
-            # Feld 1: eindeutiger SchlŸssel (Primary Key)
-            # Felder 2 bis 8: hierarchische Verwaltungsgliederung, hier:
-            #      Feld  2: Staat (DE == Deutschland)
-            #      Feld  3: Bundesland, s.o.
-            #      Feld  4: Regierungsbezirk
-            #      Feld  5: Landkreis
-            #      Feld  6: Verwaltungszusammenschluss
-            #      Feld  7: Ort
-            # Felder 8 und 9: Koordinaten:
-            #      Feld 8: LŠngengrad
-            #      Feld 9: Breitengrad
-            # Feld 10: Postleitzahl
+    # Feld 1: eindeutiger Schlï¿½ssel (Primary Key)
+    # Felder 2 bis 8: hierarchische Verwaltungsgliederung, hier:
+    #      Feld  2: Staat (DE == Deutschland)
+    #      Feld  3: Bundesland, s.o.
+    #      Feld  4: Regierungsbezirk
+    #      Feld  5: Landkreis
+    #      Feld  6: Verwaltungszusammenschluss
+    #      Feld  7: Ort
+    # Felder 8 und 9: Koordinaten:
+    #      Feld 8: Lï¿½ngengrad
+    #      Feld 9: Breitengrad
+    # Feld 10: Postleitzahl
 
     values = ("1", "AT", "", "", "", "", "", lon, lat, plz)
 
